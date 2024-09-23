@@ -1,0 +1,106 @@
+To explain the document line by line, let's go through key sections from the Technical Design Document. I’ll break down the contents, explaining the purpose of each part.
+
+1. Version History
+Version: Indicates the release or update version of the document.
+Date: The date the version was created or updated.
+Author: Person or team responsible for the version.
+Changes: This column lists the updates made, such as changes to business logic, updates to audit processes, or specific system incidents that led to adjustments. For example:
+Version 1.0 (03/17/2023): Initial version of the document.
+Version 1.5 (01/03/2024): Updated the percentage from 2% to 1% for certain claim types due to Incident INC2533129.
+Version 1.7 (05/07/2024): Code changes in the UI to remove semicolons from field values and other improvements.
+2. Summary Section
+Program Name: Specifies that the program is for a "Percentage of Claims - DSU Audit Report".
+Workstream: This may relate to a specific department or project within the claims quality process.
+Document State: States that this is an Extract document.
+QNXT Interface ID: The unique interface ID (INT00000608) for this claim extraction process.
+QNXT Interface Name: Describes the extract process as the "Percentage of Claims Extract".
+3. Description/Purpose
+General Description: Explains the purpose of the process, which is to support Claims Quality by generating an extract of claims to be audited.
+Interface Details:
+Interface ID: INT00000608 is referenced again.
+Applicable Programs: Lists specific programs, such as:
+PGM000000348: Optima MA (Medicare Advantage)
+PGM000000349: Optima DSNP (Dual Eligible Special Needs Plans)
+PGM000000352: Optima Medallion 4
+PGM000000353: Optima CCC Plus (Commonwealth Coordinated Care)
+4. Technical Requirements
+Frequency: The extract is run once weekly as early as possible on Monday.
+
+File Type: The output is an XML file.
+
+File Names:
+
+For Production: File name follows the format CA_QNXT_yyyyMMddhhmmss.xml.
+For Testing (SIT & UAT environments): File name follows the format CA_QNXT_TEST_yyyyMMddhhmmss.xml.
+Load Criteria: Describes the rules for which claims are included:
+
+Only claims with statuses "Paid" or "Denied" are included.
+Claims must have been paid between the Last Run Date and the Current Date.
+Excludes claims with reversals or those previously audited.
+5. Adhoc Run Details
+Adhoc Run: Allows for specific audit types to be run manually, outside of the normal weekly schedule.
+
+SQL Queries: To enable an Adhoc run, the following SQL scripts need to be executed:
+
+Update the SHPt_Interface_Adhoc_Param table to set the appropriate values for an adhoc run.
+Set the start and end dates for the adhoc run and specify the audit type.
+Note: These SQL updates are necessary for each audit type, and the Active Batch Job must be triggered manually.
+
+6. ETL Process (Extract, Transform, Load)
+Source Database: The claims data is pulled from the QODS (QNXT_SI_CustomDB_OHP) database.
+SSIS Package: The SSIS package is responsible for running the stored procedure that extracts claims data, loads it into staging tables, and generates the XML file.
+Transformation: Data is loaded into the staging tables, formatted with XML tags, and written to an XML file.
+Target Location: The XML file is stored at a shared location, \\corp.ad.sentara.com\capsdfs\goaq6-share\Medicare\extracts\.
+File Naming Convention:
+Production: File name uses the format CA_QNXT_yyyyMMddhhmmss.xml.
+Test: File name uses the format CA_QNXT_TEST_yyyyMMddhhmmss.xml.
+7. Steps to Fetch Percentage of Claims
+The document describes the logic for determining the start and end date for each extract run.
+If it's the first run, the start date is set to the previous week's Sunday.
+Audit Week: The system runs audits for claims based on a specific Audit Week (often the last Sunday).
+SQL logic is used to pull claims that match the criteria, avoiding reversals or previously audited claims.
+The SQL code checks whether the run is scheduled, looks up specific parameters like start and end dates, and uses those to fetch claims data.
+
+8. Claim Categorization
+Claims are categorized for audits based on conditions like Approved Amount, Status Group, and Adjudication Type.
+Categories include:
+Medicare High Dollar: Claims over $50,000, split into manual and auto-adjudicated categories.
+DSNP High Dollar: Similar to Medicare, for the DSNP program.
+Random Audits: Claims under $10,000 that are selected randomly.
+Auto Adjudicated: Automatically processed claims are flagged for audit.
+The SQL logic further breaks down the rules for each claim type and how they are categorized.
+9. Audit Type and Randomization
+Random Sorting: Claims are randomized using a hash function to ensure a random selection for auditing.
+The document also defines the logic for audit types such as Random Audits, Focused Audits, and High-Dollar Claims.
+10. Technical Approach and SSIS Objects
+SSIS Package: The main SSIS package (INF_OHP_608_Percentage_of_Claims_Ext) is responsible for processing and exporting claims.
+SQL Tasks and Procedures:
+There are multiple SQL tasks like est_Generate_Log_HeaderID, est_Get_Config_Values, and est_log_start, which help in logging, extracting claims data, and creating the XML file.
+Stored Procedures: The stored procedure INF_OHPp_608_Percentage_of_Claims_Extract generates the percentage of claims data, wraps them in XML tags, and loads them into a table for final processing.
+11. Job Scheduler
+The job scheduler is configured to run the claims extract process bi-weekly on Sundays and Wednesdays.
+Adhoc runs can be triggered by updating the SHPt_Interface_Adhoc_Param table with appropriate parameters.
+This is an overview of the key sections from the TDD. Each line in the document serves to define how the "Percentage of Claims Extract" process works, from SQL procedures and SSIS packages to the job scheduling and file generation.
+
+Would you like further clarification on any specific SQL logic or the technical aspects of the process?
+
+
+3/3
+
+
+
+
+
+
+4o
+Switch model
+GPT-4o
+Great for most tasks
+GPT-4o mini
+Faster for everyday tasks
+Try again
+GPT-4o
+
+
+
+
