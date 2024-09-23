@@ -1,0 +1,105 @@
+Here is a brief overview of each sheet's content:
+
+Test_Cases:
+
+This sheet outlines various test cases (TCs) related to a "Percentage of Claims Extract."
+It includes details such as:
+Test Case Numbers (TC_1, TC_2, etc.)
+Test Case Name (e.g., Database access, Positive Input Selection Criteria)
+Other associated data for each test case.
+Audit_Crosswalk_Details:
+
+Contains mapping data between "Extract Table Names" and "Audit Table Names" for audits.
+Also includes:
+Program Names
+Counts associated with the data.
+Test_Results_Screenshots:
+
+Appears to be a placeholder for screenshots with some empty fields.
+The first column (TC_5, etc.) might represent test case numbers, while the rest of the columns contain references to results or notes.
+Dev_Output_File:
+
+This sheet has some high-level extraction information, mentioning things like:
+Extract files based on Program IDs (e.g., PGM0000)
+Sample XML file names (e.g., CA_QNXT_TEST_yyyyMMddhhmmss.xml)
+Some rows appear to be placeholders or contain minimal data.
+SQL_Execution_Plan:
+
+This sheet is empty, implying no data is present for SQL execution plans in this version of the file.
+Would you like a more detailed explanation of a particular sheet or specific rows? ​​
+
+
+
+
+
+Let's go through each sheet in more detail:
+
+1. Test_Cases Sheet
+This sheet provides details about various test cases (TC) relevant to a "Percentage of Claims Extract." Here's how the content is structured:
+
+Test Case Number (TC_X): Each test case is identified by a unique number (TC_1, TC_2, etc.). This helps track the results and actions related to that specific test case.
+
+Test Case Name: This column provides a brief description of what each test case is testing, such as:
+
+Database Access: A test that likely checks whether access to the database is correctly implemented.
+Database Object Validation: This verifies that specific database objects (tables, views, etc.) are correct and functioning as expected.
+Input Selection Criteria: These tests ensure that the input data being selected for processing (e.g., claims) adheres to the specified criteria, both positive and negative.
+Each row in this sheet would represent a specific test case, and the details would help guide the user through testing different functionalities of a system related to claim extraction.
+
+2. Audit_Crosswalk_Details Sheet
+This sheet appears to link or "crosswalk" between two sets of tables:
+
+Extract Table Name: These are likely the original data tables or sources from which data is extracted.
+Audit Table Name: These tables are used for audit purposes, possibly ensuring the accuracy of the extraction process.
+There are additional fields like:
+
+Program Name: Identifies the specific program or system being used, such as the application or tool managing the claims data.
+Count: The number of records or items being referenced, possibly helping validate that the data has been correctly extracted or audited.
+This sheet would be useful for auditing purposes, ensuring that extracted data aligns with the correct audit tables.
+
+3. Test_Results_Screenshots Sheet
+This sheet seems to contain placeholders or references to screenshots and results. The first column shows the test case (e.g., TC_5), and the remaining columns might contain screenshots or logs related to the outcome of those test cases.
+
+In this sheet:
+
+Unnamed Columns: Likely references for where the test results are stored or displayed. The third column includes notes or additional details about what was tested, such as, “Fetching 1% of all claim data.”
+This sheet would help document the actual results visually or in a text-based format, making it easier to review the outcomes of each test case.
+
+4. Dev_Output_File Sheet
+This sheet contains details on files generated as output from the development process. For example:
+
+Program IDs: Unique identifiers for each program or job (e.g., PGM0000) used during the extraction process.
+File Names: Example filenames generated during the process (e.g., CA_QNXT_TEST_yyyyMMddhhmmss.xml).
+It appears that this sheet is documenting which files were generated based on specific processes or jobs run during testing or development.
+
+5. SQL_Execution_Plan Sheet
+This sheet is currently empty. If it were filled, it might provide details on how SQL queries were executed. An SQL execution plan typically describes:
+
+How the database processes and retrieves data.
+Efficiency details, such as time taken, resources used, and potential bottlenecks.
+An SQL execution plan helps optimize the database's performance, but since the sheet is empty, there’s no data to analyze in this case.
+
+Would you like me to analyze or explain a specific row or column in more detail? Or perhaps walk through a specific test case or extraction process?
+
+
+
+
+
+: Example filenames generated during the process (e.g., CA_QNXT_TEST_yyyyMMddhhmmss.xml).
+It appears that this sheet is documenting which files were generated based on specific processes or jobs run during testing or development.
+
+5. SQL_Execution_Plan Sheet
+This sheet is currently empty. If it were filled, it might provide details on how SQL queries were executed. An SQL execution plan typically describes:
+
+How the database processes and retrieves data.
+Efficiency details, such as time taken, resources used, and potential bottlenecks.
+An SQL execution plan helps optimize the database's performance, but since the sheet is empty, there’s no data to analyze in this case.
+
+Would you like me to analyze or explain a specific row or column in more detail? Or perhaps walk through a specific test case or extraction process?
+
+
+
+
+
+
+
