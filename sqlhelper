@@ -1,0 +1,234 @@
+using System;
+using System.Collections;
+using System.Data;
+using System.Data.SqlClient;
+
+namespace Percentage_Claim_UI.DBUtilities
+{
+    public class SQLHelper
+    {
+        public SqlConnection sqlConnect;
+        private SqlCommand commandObject;
+
+        /// <summary>
+        /// The constructor opens the connection with the DB and Server names provided.
+        /// Please handle any exception thrown by the constructor.
+        /// </summary>
+        /// <param name="dbName">Database name</param>       
+        public string getConnectionString(string connectionString)
+        {
+            return connectionString;
+        }
+
+        public SQLHelper(string connectionString)
+        {
+            sqlConnect = new SqlConnection(getConnectionString(connectionString));
+        }
+
+        /// <summary>
+        /// Function to execute the SP along with its parameters.
+        /// </summary>
+        /// <param name="spName"></param>
+        /// <param name="paramValues"></param>
+        public DataSet ExecuteSPForDataSet(string spName, Hashtable paramValues)
+        {
+            if (this.sqlConnect.State != ConnectionState.Open)
+            {
+                this.sqlConnect.Open();
+            }
+            this.commandObject = new SqlCommand(spName, this.sqlConnect);
+            this.AddParameterValues(paramValues);
+            this.commandObject.CommandType = CommandType.StoredProcedure;
+            this.commandObject.CommandTimeout = 15000;
+            SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(this.commandObject);
+            DataSet dataSet = new DataSet();
+            sqlDataAdapter.Fill(dataSet);
+            this.sqlConnect.Close();
+            sqlDataAdapter.Dispose();
+            this.commandObject.Dispose();
+            return dataSet;
+        }
+
+        /// <summary>
+        /// Function to execute the SP with no parameters.
+        /// </summary>
+        /// <param name="spName"></param>
+       
+        public DataSet ExecuteSPForDataSetNoParams(string spName)
+        {
+            if (this.sqlConnect.State != ConnectionState.Open)
+            {
+                this.sqlConnect.Open();
+            }
+            this.commandObject = new SqlCommand(spName, this.sqlConnect);          
+            this.commandObject.CommandType = CommandType.StoredProcedure;
+            this.commandObject.CommandTimeout = 15000;
+            SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(this.commandObject);
+            DataSet dataSet = new DataSet();
+            sqlDataAdapter.Fill(dataSet);
+            this.sqlConnect.Close();
+            sqlDataAdapter.Dispose();
+            this.commandObject.Dispose();
+            return dataSet;
+        }
+
+        /// <summary>
+        /// Function to execute the SP along with its parameters.
+        /// </summary>
+        /// <param name="spName"></param>
+        /// <param name="paramValues"></param>
+        public DataTable ExecuteSPForDataTable(string spName, Hashtable paramValues)
+        {
+            if (this.sqlConnect.State != ConnectionState.Open)
+            {
+                this.sqlConnect.Open();
+            }
+            this.commandObject = new SqlCommand(spName, this.sqlConnect);
+            this.AddParameterValues(paramValues);
+            this.commandObject.CommandType = CommandType.StoredProcedure;
+            this.commandObject.CommandTimeout = 15000;
+            SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(this.commandObject);
+            DataTable dataTable = new DataTable();
+            sqlDataAdapter.Fill(dataTable);
+            this.sqlConnect.Close();
+            sqlDataAdapter.Dispose();
+            this.commandObject.Dispose();
+            return dataTable;
+        }
+
+        /// <summary>
+        /// Function to execute the SP along with its parameters.
+        /// </summary>
+        /// <param name="spName"></param>
+        /// <param name="paramValues"></param>
+        public void ExecuteSPNoReturn(string spName, Hashtable paramValues)
+        {
+
+            if (sqlConnect.State != ConnectionState.Open)
+            {
+                sqlConnect.Open();
+            }
+            commandObject = new SqlCommand(spName, sqlConnect);
+            AddParameterValues(paramValues);
+            commandObject.CommandText = spName;
+            commandObject.CommandTimeout = 15000;
+            commandObject.CommandType = CommandType.StoredProcedure;
+            commandObject.ExecuteNonQuery();
+
+            sqlConnect.Close();
+            commandObject.Dispose();
+
+        }
+
+        /// <summary>
+        /// Function to execute the SP without parameters.
+        /// </summary>
+        /// <param name="spName"></param>
+        public void ExecuteSPNoParams(string spName)
+        {
+
+            if (sqlConnect.State != ConnectionState.Open)
+            {
+                sqlConnect.Open();
+            }
+            commandObject = new SqlCommand(spName, sqlConnect);           
+            commandObject.CommandText = spName;
+            commandObject.CommandTimeout = 15000;
+            commandObject.CommandType = CommandType.StoredProcedure;
+            commandObject.ExecuteNonQuery();
+
+            sqlConnect.Close();
+            commandObject.Dispose();
+
+        }
+
+        private void AddParameterValues(Hashtable paramValues)
+        {
+            if (paramValues == null || paramValues.Count == 0)
+            {
+                return;
+            }
+            SqlDbType sqlDbType = SqlDbType.Int;
+            int size = 0;
+            byte precision = 0;
+            byte scale = 0;
+            foreach (string text in paramValues.Keys)
+            {
+                if (paramValues[text] is double)
+                {
+                    sqlDbType = SqlDbType.Money;
+                    size = 8;
+                    precision = 19;
+                    scale = 4;
+                }
+                else
+                {
+                    if (paramValues[text] is decimal)
+                    {
+                        sqlDbType = SqlDbType.Money;
+                        size = 8;
+                        precision = 19;
+                        scale = 4;
+                    }
+                    else
+                    {
+                        if (paramValues[text] is long)
+                        {
+                            sqlDbType = SqlDbType.BigInt;
+                            size = 8;
+                            precision = 19;
+                            scale = 0;
+                        }
+                        else
+                        {
+                            if (paramValues[text] is int)
+                            {
+                                sqlDbType = SqlDbType.Int;
+                                size = 4;
+                                precision = 10;
+                                scale = 0;
+                            }
+                            else
+                            {
+                                if (paramValues[text] is string)
+                                {
+                                    sqlDbType = SqlDbType.VarChar;
+                                    size = ((string)paramValues[text]).Length;
+                                    precision = 0;
+                                    scale = 0;
+                                }
+                                else
+                                {
+                                    if (paramValues[text] is DateTime)
+                                    {
+                                        sqlDbType = SqlDbType.DateTime;
+                                        //size = ((DateTime)paramValues[text]).Length;
+                                        precision = 0;
+                                        scale = 0;
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                SqlParameter sqlParameter = new SqlParameter();
+                sqlParameter.ParameterName = text;
+                sqlParameter.SqlDbType = sqlDbType;
+                sqlParameter.Size = size;
+                sqlParameter.Precision = precision;
+                sqlParameter.Scale = scale;
+                sqlParameter.Value = paramValues[text];
+                this.commandObject.Parameters.Add(sqlParameter);
+            }
+        }
+
+        private void AddParameterValues(params SqlParameter[] spParams)
+        {
+            foreach (SqlParameter spParam in spParams)
+            {
+                commandObject.Parameters.Add(spParam);
+            }
+        }
+    }
+}
