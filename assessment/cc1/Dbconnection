@@ -1,0 +1,145 @@
+Here’s a detailed line-by-line explanation of the code, explaining what is what and why it is used:
+
+1-8. Namespace and Class Definition
+csharp
+Copy code
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Data.SqlClient;
+using System.Configuration;
+using System.Data;
+using System.Collections;
+Namespaces: These using directives import different namespaces, each of which contains a set of related classes and functions:
+System: Provides basic data types and functions like String, DateTime, and exception handling (Exception class).
+System.Collections.Generic: Contains generic collection classes like List<T>, Dictionary<TKey, TValue>.
+System.Linq: Provides LINQ support, which is a querying language for objects, databases, etc.
+System.Web: Used for web-related functionality in ASP.NET applications.
+System.Data.SqlClient: Contains classes for accessing and working with a SQL Server database.
+System.Configuration: Provides access to configuration files like Web.config to read settings.
+System.Data: Contains classes for working with databases, such as DataSet, DataTable, etc.
+System.Collections: Contains non-generic collection classes like Hashtable.
+csharp
+Copy code
+namespace Percentage_Claim_UI.DBUtilities
+{
+    public class dbConnection
+    {
+Namespace Percentage_Claim_UI.DBUtilities: It organizes the code into a logical group and avoids naming conflicts.
+Class dbConnection: A public class named dbConnection serves as a utility for database interactions.
+9-12. Database Connection Strings
+csharp
+Copy code
+string PlantDBconstring = ConfigurationManager.ConnectionStrings["PlanDataDB"].ConnectionString.ToString();
+string CustomDBConstring = ConfigurationManager.ConnectionStrings["CustomDB"].ConnectionString.ToString();
+What: These two strings store connection strings to two different databases: PlanDataDB and CustomDB.
+Why: These connection strings are retrieved from the Web.config file using ConfigurationManager. They store the connection details (like server name, database name, user credentials) for database access.
+13-50. Update_Percentage_Claim_Audit_Adhoc Method
+csharp
+Copy code
+public void Update_Percentage_Claim_Audit_Adhoc(string ClaimType, string ExtractType, string progids_Included, ...)
+{
+    try
+    {
+        SQLHelper objHelper = new SQLHelper(CustomDBConstring);
+        Hashtable htParamValues = new Hashtable();
+        htParamValues.Add("@ClaimType", ClaimType);
+        htParamValues.Add("@ExtractType", ExtractType);
+        ...
+        objHelper.ExecuteSPNoReturn("SHPp_Percentage_Claim_Audit_Adhoc_Update", htParamValues);
+    }
+    catch (Exception ex)
+    {
+        throw new Exception(ex.Message, ex);
+    }
+}
+What: This method updates audit details in the database, most likely related to percentage claims.
+Parameters: The method takes various parameters like ClaimType, ExtractType, and other details, which are passed into the stored procedure.
+Why:
+SQLHelper objHelper: This creates an object objHelper of a helper class SQLHelper, initialized with the database connection string (CustomDBConstring).
+Hashtable: A Hashtable is used to store key-value pairs for the parameters that will be passed to the stored procedure.
+ExecuteSPNoReturn: Executes the stored procedure SHPp_Percentage_Claim_Audit_Adhoc_Update without expecting any return value.
+51-60. UpdateCotivitiSelectionCriteria Method
+csharp
+Copy code
+public void UpdateCotivitiSelectionCriteria()
+{
+    SQLHelper objHelper = new SQLHelper(CustomDBConstring);
+    try
+    {
+        objHelper.ExecuteSPNoParams("SHPp_PrePay_Update_SelectionCriteria");
+    }
+    catch (Exception ex)
+    {
+        throw new Exception(ex.Message, ex);
+    }
+}
+What: This method runs a stored procedure to update some selection criteria related to Cotiviti.
+Why: The SQLHelper object runs the stored procedure SHPp_PrePay_Update_SelectionCriteria. No parameters are passed in this case.
+61-81. getProgramClaimDetails Method
+csharp
+Copy code
+public DataSet getProgramClaimDetails()
+{
+    DataSet dsProgramsClaims;
+    SQLHelper objHelper = new SQLHelper(CustomDBConstring);
+    try
+    {
+        dsProgramsClaims = new DataSet();
+        dsProgramsClaims = objHelper.ExecuteSPForDataSetNoParams("SHPp_Percentage_Claim_GetProgram");
+    }
+    catch (Exception ex)
+    {
+        throw new Exception(ex.Message, ex);
+    }
+    return dsProgramsClaims;
+}
+What: This method retrieves claim details for a program.
+Why: The stored procedure SHPp_Percentage_Claim_GetProgram is executed and its results are returned as a DataSet.
+82-103. getAuditType Method
+csharp
+Copy code
+public DataSet getAuditType(string claim_type)
+{
+    DataSet dsAuditType;
+    SQLHelper objHelper = new SQLHelper(CustomDBConstring);
+    try
+    {
+        dsAuditType = new DataSet();
+        Hashtable htParamValues = new Hashtable();
+        htParamValues.Add("@claim_type", claim_type);
+        dsAuditType = objHelper.ExecuteSPForDataSet("SHPp_GetAuditType_PercentageClaim", htParamValues);
+    }
+    catch (Exception ex)
+    {
+        throw new Exception(ex.Message, ex);
+    }
+    return dsAuditType;
+}
+What: This method retrieves audit types based on the claim type.
+Why: The method accepts a claim_type as a parameter, adds it to a Hashtable, and executes the stored procedure SHPp_GetAuditType_PercentageClaim to return a DataSet.
+104-162. Other Methods
+Similar methods exist for different purposes:
+
+getAdjudicators_PercentageClaim: Retrieves adjudicators using SHPp_GetAdjudicators_PercentageClaim.
+getProviders: Retrieves provider details based on input using SHPp_Percentage_Claim_GetProviders.
+getdxcodes: Retrieves diagnostic codes based on input using SHPp_Percentage_Claim_GetdxCodes.
+getProcedureCodes: Retrieves procedure codes using SHPp_Percentage_Claim_GetProcedureCodes.
+GetAdhocFlag: Retrieves the adhoc flag based on an interface ID using SHPp_GetAdhocFlag.
+getPosCode: Retrieves point-of-service (POS) codes based on input using SHPp_Percentage_Claim_GetPOSCodes.
+getClaimEditRuleID: Retrieves rule IDs using SHPp_Percentage_Claim_getClaimEditRuleID.
+Components and Purpose:
+SQLHelper: This is likely a helper class that abstracts SQL database interactions, simplifying executing stored procedures, querying data, etc.
+Stored Procedures: Names like SHPp_Percentage_Claim_GetProgram refer to SQL Server stored procedures. These are predefined queries that can take parameters, modify data, or return result sets.
+DataSet/DataTable: These are .NET objects that hold data returned from the database. DataSet can hold multiple tables, while DataTable holds a single table.
+Why:
+These methods are all about interacting with the database using stored procedures. They fetch and update information related to claims, programs, providers, codes, adjudicators, etc., making the system database-driven and enabling centralized data management. Each method uses a helper class (SQLHelper) to simplify the execution of database queries.
+
+This code is likely part of the backend logic in an ASP.NET web application that handles percentage claim auditing and selection criteria for different programs. The logic interacts heavily with a SQL Server database, retrieving, updating, and processing various data elements related to claims and audits.
+
+
+
+
+
+
