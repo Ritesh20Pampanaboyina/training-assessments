@@ -1,0 +1,240 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Data.SqlClient;
+using System.Configuration;
+using System.Data;
+using System.Collections;
+
+namespace Percentage_Claim_UI.DBUtilities
+{
+    public class dbConnection
+    {
+      
+
+        string PlantDBconstring = ConfigurationManager.ConnectionStrings["PlanDataDB"].ConnectionString.ToString();
+        string CustomDBConstring = ConfigurationManager.ConnectionStrings["CustomDB"].ConnectionString.ToString();
+
+        public void Update_Percentage_Claim_Audit_Adhoc(string ClaimType,string ExtractType, string progids_Included, string Progids_Excluded,string Adjudicators_Included,string Adjudicators_Excluded,DateTime begin_date,DateTime end_date,string Providers_Included, string dxcodes_Included, string procodes_Included, string Poscodes_Included, string RuleIDs_Included,string Claim_Over_Dollar,string Number_Percent_Claim)
+        {
+            try
+            {
+                SQLHelper objHelper = new SQLHelper(CustomDBConstring);
+                Hashtable htParamValues = new Hashtable();
+                htParamValues.Add("@ClaimType", ClaimType);//Code Added on 04/02/2024(IDEA0060156)
+                htParamValues.Add("@ExtractType", ExtractType);
+                htParamValues.Add("@progids_Included", progids_Included);
+                htParamValues.Add("@Progids_Excluded", Progids_Excluded);
+                htParamValues.Add("@Adjudicators_Included", Adjudicators_Included);
+                htParamValues.Add("@Adjudicators_Excluded", Adjudicators_Excluded); 
+                htParamValues.Add("@begin_date", begin_date);
+                htParamValues.Add("@end_date", end_date);
+                htParamValues.Add("@Providers_Included", Providers_Included);
+                htParamValues.Add("@dxcodes_Included", dxcodes_Included);
+                htParamValues.Add("@procodes_Included", procodes_Included);
+                htParamValues.Add("@Poscodes_Included", Poscodes_Included);
+                htParamValues.Add("@RuleIDs_Included", RuleIDs_Included);
+                htParamValues.Add("@Claim_Over_Dollar", Claim_Over_Dollar);
+                htParamValues.Add("@Number_Percent_Claim", Number_Percent_Claim);
+                objHelper.ExecuteSPNoReturn("SHPp_Percentage_Claim_Audit_Adhoc_Update", htParamValues);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+
+        }
+      
+
+
+
+        public void UpdateCotivitiSelectionCriteria()
+        {
+            SQLHelper objHelper = new SQLHelper(CustomDBConstring);            
+            try
+            {
+                objHelper.ExecuteSPNoParams("SHPp_PrePay_Update_SelectionCriteria");               
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }           
+        }
+        public DataSet getProgramClaimDetails()
+        {
+            DataSet dsProgramsClaims;
+            SQLHelper objHelper = new SQLHelper(CustomDBConstring);
+            try
+            {
+                dsProgramsClaims = new DataSet();
+                dsProgramsClaims = objHelper.ExecuteSPForDataSetNoParams("SHPp_Percentage_Claim_GetProgram");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+            return dsProgramsClaims;
+        }
+        public DataSet getAuditType(string claim_type)//Code Added on 04/02/2024(IDEA0060156)
+        {
+            DataSet dsAuditType;
+            SQLHelper objHelper = new SQLHelper(CustomDBConstring);
+            try
+            {
+                dsAuditType = new DataSet();
+                //dsAuditType = objHelper.ExecuteSPForDataSetNoParams("SHPp_GetAuditType_PercentageClaim");
+                //Code Added on 04/02/2024(IDEA0060156)
+                Hashtable htParamValues = new Hashtable();
+                htParamValues.Add("@claim_type", claim_type);
+                dsAuditType = objHelper.ExecuteSPForDataSet("SHPp_GetAuditType_PercentageClaim", htParamValues);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+            return dsAuditType;
+        }
+        public DataSet GetAdjudicators_PercentageClaim()
+        {
+            DataSet dsAdjudicators;
+            SQLHelper objHelper = new SQLHelper(CustomDBConstring);
+            try
+            {
+                dsAdjudicators = new DataSet();
+                dsAdjudicators = objHelper.ExecuteSPForDataSetNoParams("SHPp_GetAdjudicators_PercentageClaim");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+            return dsAdjudicators;
+        }
+
+
+        public DataTable getProviders(string providerText)
+        {
+            
+            DataTable dtProviders;
+            SQLHelper objHelper = new SQLHelper(CustomDBConstring);
+            try
+            {
+                dtProviders = new DataTable();
+                Hashtable htParamValues = new Hashtable();
+                htParamValues.Add("@ProviderText", providerText);
+                dtProviders = objHelper.ExecuteSPForDataTable("SHPp_Percentage_Claim_GetProviders", htParamValues);                
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);              
+            }
+           
+            return dtProviders;
+        }
+
+
+        public DataTable getdxcodes(string dxcodetext)
+        {
+            DataTable dtdxcodes;
+            SQLHelper objHelper = new SQLHelper(CustomDBConstring);
+            try
+            {
+                dtdxcodes = new DataTable();
+                Hashtable htParamValues = new Hashtable();
+                htParamValues.Add("@dxcodetxt", dxcodetext);
+                dtdxcodes = objHelper.ExecuteSPForDataTable("SHPp_Percentage_Claim_GetdxCodes", htParamValues);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+
+            return dtdxcodes;         
+        }
+
+
+        public DataTable getProcedureCodes(string ProcCodeText)
+        {
+
+            DataTable dtProcedureCodes;
+            SQLHelper objHelper = new SQLHelper(CustomDBConstring);
+            try
+            {
+                dtProcedureCodes = new DataTable();
+                Hashtable htParamValues = new Hashtable();
+                htParamValues.Add("@Proceduretxt", ProcCodeText);
+                dtProcedureCodes = objHelper.ExecuteSPForDataTable("SHPp_Percentage_Claim_GetProcedureCodes", htParamValues);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+
+            return dtProcedureCodes;
+
+        }
+        //Code Added on 05/18/2024(Start)
+        public DataTable GetAdhocFlag(string intefaceid)
+        {
+
+            DataTable dt_new;
+            SQLHelper objHelper = new SQLHelper(CustomDBConstring);
+            try
+            {
+                dt_new = new DataTable();
+                Hashtable htParamValues = new Hashtable();
+                htParamValues.Add("@InterfaceId", intefaceid);
+                dt_new = objHelper.ExecuteSPForDataTable("SHPp_GetAdhocFlag", htParamValues);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+
+            return dt_new;
+        }
+        //Code Added on 05/18/2024(End)
+        public DataTable getPosCode(string PoscodeText)
+        {
+
+            DataTable dtPosCodes;
+            SQLHelper objHelper = new SQLHelper(CustomDBConstring);
+            try
+            {
+                dtPosCodes = new DataTable();
+                Hashtable htParamValues = new Hashtable();
+                htParamValues.Add("@poscodetxt", PoscodeText);
+                dtPosCodes = objHelper.ExecuteSPForDataTable("SHPp_Percentage_Claim_GetPOSCodes", htParamValues);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+
+            return dtPosCodes;            
+        }
+     
+
+        public DataTable getClaimEditRuleID(string RuleIDText)
+        {
+            DataTable dtRuleID;
+            SQLHelper objHelper = new SQLHelper(CustomDBConstring);            
+            try
+            {
+                dtRuleID = new DataTable();
+                Hashtable htParamValues = new Hashtable();
+                htParamValues.Add("@RuleIDtext", RuleIDText);
+                dtRuleID = objHelper.ExecuteSPForDataTable("SHPp_Percentage_Claim_getClaimEditRuleID", htParamValues);                
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+
+            return dtRuleID;
+        }             
+      
+    }
+}
