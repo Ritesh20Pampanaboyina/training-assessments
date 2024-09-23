@@ -1,0 +1,99 @@
+Here is a detailed breakdown of the Percentage of Claims Extract (BRD 522 INT00000608) document, from start to end. The document includes deployment steps for different environments, SQL script execution, SSIS package setups, and Active Batch job configurations. I’ll walk you through each section of the document.
+
+1. Database Objects Deployment Steps
+This section covers the deployment of SQL scripts across SIT, UAT, and PROD environments. It involves executing a set of SQL scripts in a specific order to create tables, insert data, and configure the database for claims extraction.
+
+For SIT Environment:
+Step 1: Download and unzip the “INT00000608_Percentage of Claims_Extract.zip” file from the GIT repository.
+
+Step 2: Connect to the SQL Server HE1TESIHPDWDB04 and the database QNXT_SI_CustomDB_OHP using SQL Management Studio.
+
+Step 3: Execute the following SQL scripts:
+
+Script_Create_SHPt_608_stg_Percentage_of_Claims.sql: Creates a staging table for percentage claims data.
+Script_Create_SHPt_608_stg_Percentage_of_Claims_History.sql: Creates a history table for tracking changes.
+Script_Create_SHPt_608_stg_Percentage_of_Claims_XML.sql: Creates a table for storing XML data.
+Script_Create_SHPt_608_Percentage_of_Claims_Crosswalk.sql: Creates a crosswalk table for claims.
+Script_Insert_SHPt_608_Percentage_of_Claims_Crosswalk.sql: Inserts crosswalk data.
+Script_Create_SHPt_608_stg_ALL_CLAIM_DATA.sql: Creates a staging table for all claim data.
+Script_Insert_SHPt_Interface_Adhoc_Param.sql: Inserts parameters for adhoc interface configuration.
+Script_Create_SHPt_608_stg_BOT_UserNames.sql: Creates a table for BOT usernames.
+Script_Insert_SHPt_608_stg_BOT_UserNames.sql: Inserts BOT usernames.
+Step 4: Execute the INF_OHPp_608_Percentage_of_Claims_Extract.sql script in the environment to generate the claims extract.
+
+For UAT Environment:
+Step 2: Connect to the SQL Server HE1TEUAHPDWDB04 and execute the same set of scripts as mentioned above for the SIT environment.
+Step 4: Execute INF_OHPp_608_Percentage_of_Claims_Extract.sql.
+For PROD Environment:
+Step 2: Connect to the SQL Server VE1PRVPHPDWDB04 and execute the same set of scripts as SIT and UAT.
+Step 4: Execute INF_OHPp_608_Percentage_of_Claims_Extract.sql.
+2. SSIS Package Deployment Steps
+This section outlines the setup and deployment of SSIS packages (SQL Server Integration Services) for the claims extract.
+
+Step 1: Create a folder structure on the app server if it doesn’t already exist:
+
+C:\MiniApps\OHP\Extracts\BatchFiles: This folder is used to store batch files that trigger SSIS packages.
+Step 2: Copy batch files from GIT to the server:
+
+Source Path: Batch_File - Repos (azure.com)
+Destination Path: C:\MiniApps\OHP\Extracts\BatchFiles
+Step 3: Create another folder structure for storing SSIS packages:
+
+C:\MiniApps\OHP\Extracts\ISPAC: This is where the .ispac files for SSIS will be stored.
+Step 4: Copy the .ispac file from GIT to the server:
+
+Source Path: ISPAC_File - Repos (azure.com)
+Destination Path: C:\MiniApps\OHP\Extracts\ISPAC
+3. Active Batch Job Setup
+Active Batch jobs are automated jobs set up to run tasks related to claims extraction. This section describes how to set up or migrate jobs for different environments.
+
+For SIT Environment:
+Step 1: Connect to the Active Batch non-prod server he1teutilab01.
+
+Step 2: Create the folder /OHP/SIT for the SIT environment.
+
+Step 3: Create a subfolder /OHP/SIT/Claims for claims-related jobs.
+
+Step 4: Update the following variables:
+
+DB_Name_landing: QNXT_SI_CustomDB_OHP (Landing server database name).
+DB_Server_landing: HE1TESIHPDWDB04 (Landing server name).
+env: SIT (environment).
+Source_Path: C:\MiniApps\OHP\Extracts\BatchFiles.
+Step 5: Migrate the Active Batch job from /OHP/Dev/Claims/INF_OHP_608_Percentage_of_Claims_Extract to /OHP/SIT/Claims/.
+
+Step 6: Update the paths and file locations in the Active Batch jobs.
+
+For UAT Environment:
+Follow the same steps as SIT, but use UAT-specific folder names, database names, and server information.
+For PROD Environment:
+Similar setup as UAT and SIT, with the PROD-specific server, database, and folder paths.
+4. Deployment on Specific Dates
+The document provides instructions for deployments on specific dates, including May 3, July 3, July 12, and beyond.
+
+Deployment on May 3, 2023:
+SIT: Connect to SQL Server VE1TEVPHPDWDB03, execute Script_Insert_SHPt_608_Percentage_of_Claims_Crosswalk.sql and INF_OHPp_608_Percentage_of_Claims_Extract.sql.
+UAT: Same steps as SIT.
+PROD: Same steps as SIT.
+Deployment on July 3, 2023:
+Focuses on updating or inserting new data for claims extraction in SIT, UAT, and PROD.
+Deployment on July 12, 2023:
+Mainly updating the INF_OHPp_608_Percentage_of_Claims_Extract.sql script in SIT, UAT, and PROD environments.
+Deployment on January 3, 2024:
+Involves updating the crosswalk table for percentage claims extraction in all environments.
+5. Final Artifacts and Configurations
+The document outlines final steps for deployment and merging artifacts:
+
+SSIS package (.ispac file): The INF_OHP_608_Percentage_of_Claims_Ext.ispac file is used to automate data extraction.
+Merging Artifacts: Multiple Excel files, like INF_OHP_608_Percentage_of_Claims-UTC.xlsx and mapping documents, are merged and updated.
+No Active Batch Changes: The document notes that no additional changes are required for Active Batch jobs.
+Conclusion
+The Percentage of Claims Extract Deployment Document provides detailed steps for deploying the database and SSIS package required for percentage claims extraction. Each step is focused on setting up the necessary SQL objects, configuring the application server, and automating tasks through Active Batch jobs. The document also outlines specific instructions for deployments on various dates and covers both non-production and production environments.
+
+If you need further elaboration on any specific section or file mentioned in the document, feel free to ask!
+
+
+
+
+
+
