@@ -1,0 +1,114 @@
+1-7. Using Directives
+csharp
+Copy code
+using System;
+using System.Collections;
+using System.Data;
+using System.Data.SqlClient;
+What: These using directives import namespaces required for database operations and basic types.
+System: Provides access to fundamental types like String, Exception.
+System.Collections: Provides collections (like Hashtable) used to store parameter values for SQL queries.
+System.Data: Provides classes for working with data (like DataTable, DataSet).
+System.Data.SqlClient: Provides classes for working with SQL Server (like SqlConnection, SqlCommand).
+8-10. Namespace and Class Definition
+csharp
+Copy code
+namespace Percentage_Claim_UI.DBUtilities
+{
+    public class SQLHelper
+What:
+namespace Percentage_Claim_UI.DBUtilities: Groups related classes and provides a logical container for SQLHelper class.
+public class SQLHelper: This class is a utility that encapsulates database operations, mainly executing stored procedures (SPs).
+11-15. Fields and Constructor
+csharp
+Copy code
+public SqlConnection sqlConnect;
+private SqlCommand commandObject;
+What:
+SqlConnection sqlConnect: A connection to the SQL Server database.
+SqlCommand commandObject: Used to execute SQL queries or stored procedures.
+16-23. getConnectionString() Method
+csharp
+Copy code
+public string getConnectionString(string connectionString)
+{
+    return connectionString;
+}
+What: This method returns the provided connection string.
+Why: It simplifies getting the connection string, making the connection initialization more modular.
+24-28. Constructor
+csharp
+Copy code
+public SQLHelper(string connectionString)
+{
+    sqlConnect = new SqlConnection(getConnectionString(connectionString));
+}
+What: The constructor initializes the sqlConnect with the given connection string.
+Why: This allows the SQLHelper class to work with any database by passing different connection strings.
+30-49. ExecuteSPForDataSet() Method
+csharp
+Copy code
+public DataSet ExecuteSPForDataSet(string spName, Hashtable paramValues)
+What: Executes a stored procedure and returns a DataSet.
+Opens the connection if it’s not already open.
+Creates a SqlCommand object with the stored procedure name.
+Adds parameters from the Hashtable.
+Uses a SqlDataAdapter to fill a DataSet with the results.
+Closes the connection and disposes of the command and adapter objects.
+Why: This method is used to execute a stored procedure that returns multiple tables or complex data (hence the DataSet).
+51-66. ExecuteSPForDataSetNoParams() Method
+csharp
+Copy code
+public DataSet ExecuteSPForDataSetNoParams(string spName)
+What: Executes a stored procedure with no parameters and returns a DataSet.
+Why: This is useful when the stored procedure doesn’t require any input but returns multiple tables or data (same as the previous method but without parameters).
+68-88. ExecuteSPForDataTable() Method
+csharp
+Copy code
+public DataTable ExecuteSPForDataTable(string spName, Hashtable paramValues)
+What: Executes a stored procedure and returns a DataTable.
+Similar to the previous method, but returns a DataTable instead of a DataSet.
+Why: DataTable is used when you only need one table of data, making this method more lightweight than DataSet.
+90-104. ExecuteSPNoReturn() Method
+csharp
+Copy code
+public void ExecuteSPNoReturn(string spName, Hashtable paramValues)
+What: Executes a stored procedure without returning any data.
+Mainly used for operations like insert, update, or delete (i.e., procedures that affect the database but don’t return results).
+Why: This is useful for running stored procedures that don’t need to return data (like inserting records or updating existing ones).
+106-119. ExecuteSPNoParams() Method
+csharp
+Copy code
+public void ExecuteSPNoParams(string spName)
+What: Executes a stored procedure with no parameters and doesn’t return any data.
+Similar to ExecuteSPNoReturn() but used when the stored procedure doesn’t need any input.
+Why: Useful for procedures like cleanup tasks, status updates, etc., that don't need input or output.
+121-147. AddParameterValues() Method
+csharp
+Copy code
+private void AddParameterValues(Hashtable paramValues)
+What: Adds parameters from the Hashtable to the SqlCommand.
+This method inspects the type of each value in paramValues and converts it to the appropriate SQL type (e.g., SqlDbType.Int, SqlDbType.VarChar).
+It handles different data types such as int, string, DateTime, decimal, etc.
+Why: This method is responsible for mapping C# types to SQL types and attaching the parameters to the SQL command. It ensures the stored procedure gets the correct parameters in the correct format.
+149-157. Overloaded AddParameterValues() Method
+csharp
+Copy code
+private void AddParameterValues(params SqlParameter[] spParams)
+What: Another version of the AddParameterValues() method that accepts a list of SqlParameter objects directly.
+Loops through each parameter and adds it to the SqlCommand.
+Why: This method is used when you already have an array of SqlParameter objects ready and just want to add them to the command object.
+Summary
+This SQLHelper class is a utility designed to simplify the process of interacting with a SQL Server database. It abstracts common tasks such as executing stored procedures (with or without parameters) and retrieving results in the form of DataSet or DataTable.
+
+Why it is useful:
+Simplifies repetitive database tasks.
+Manages connection handling and error-prone SQL execution logic in one place.
+Provides flexibility to handle different types of queries (read-only, update, and insert operations).
+
+
+
+
+
+
+
