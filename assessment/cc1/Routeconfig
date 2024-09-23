@@ -1,0 +1,47 @@
+Here's a line-by-line explanation of the code you provided:
+
+1. using System;
+This imports the System namespace, which provides basic types and base classes like Console, String, and others used throughout the program.
+
+2. using System.Collections.Generic;
+This namespace allows the use of generic collection types like List<T>, Dictionary<TKey, TValue>, and other data structures that use generics.
+
+3. using System.Web;
+The System.Web namespace contains classes for handling HTTP requests, responses, sessions, and web-related features in ASP.NET.
+
+4. using System.Web.Routing;
+This imports the ASP.NET routing functionality, which allows for defining routes (URL patterns) and mapping them to handlers. This is essential for clean URL management.
+
+5. using Microsoft.AspNet.FriendlyUrls;
+This imports the Microsoft.AspNet.FriendlyUrls namespace, which is a part of ASP.NET WebForms used to enable user-friendly URLs. Friendly URLs make URLs cleaner by removing file extensions (e.g., .aspx), making the web application URLs more intuitive and easier to use.
+
+6. namespace CotivitiApp
+This line defines a namespace called CotivitiApp, acting as a container for the classes and methods inside it. Namespaces help to organize the code and avoid naming conflicts.
+
+7. public static class RouteConfig
+This declares a static class named RouteConfig. Static classes cannot be instantiated and usually contain utility methods or configuration logic. In this case, it is used for defining the route configuration of the web application.
+
+8. public static void RegisterRoutes(RouteCollection routes)
+This is a static method that takes a RouteCollection object as a parameter, which stores all the routes defined in the application. This method is responsible for setting up the URL routing rules for the web application.
+
+9. var settings = new FriendlyUrlSettings();
+This line creates a new instance of the FriendlyUrlSettings class. This class allows you to configure how friendly URLs (clean URLs without extensions) should behave in your application.
+
+10. settings.AutoRedirectMode = RedirectMode.Permanent;
+This sets the AutoRedirectMode property of FriendlyUrlSettings to RedirectMode.Permanent. This means that any requests for URLs with file extensions (like .aspx) will be permanently redirected (using HTTP status code 301) to the cleaner, friendly URL version. For example, example.com/home.aspx would be permanently redirected to example.com/home.
+
+11. routes.EnableFriendlyUrls(settings);
+This method enables friendly URLs in the routing system using the specified settings. It configures the application to generate and handle URLs without file extensions and allows for better SEO and cleaner URL structures.
+
+Summary:
+This class configures the routing for an ASP.NET WebForms application. It enables friendly URLs, which help improve readability and SEO by removing file extensions (like .aspx) from URLs. The configuration uses the FriendlyUrlSettings class to specify that any old-style URLs (with extensions) should be permanently redirected to the new, friendly format. This routing system provides a cleaner URL structure for the web application, improving both usability and search engine optimization.
+
+
+
+
+
+
+
+
+
+
