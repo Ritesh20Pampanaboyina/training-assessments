@@ -1,0 +1,323 @@
+Page 1 Explanation
+Header
+Technical Design Document
+This document is a technical specification for the Enrollment Audit Extracts from QNXT (a healthcare management system).
+Title:
+Enrollment Audit Extracts out of QNXT
+This is the core function being described—taking audit data from QNXT and extracting it.
+Version History
+Version
+This lists the document's history. Changes or updates are recorded along with who made them.
+Version 1.0 (07/18/2024): The first draft created by Mara Duffield.
+Version 1.1 (07/29/2024): Added examples of business and functional requirements.
+Version 1.2 (08/14/2024): Finalized the XML file format.
+Version 1.3 (09/16/2024): Included an external link for user interface (UI).
+Table of Contents
+The table of contents is a guide to the document’s sections.
+
+Summary: High-level overview.
+Description/Purpose: Purpose and scope.
+Technical Approach: Detailed technical steps.
+Job Scheduler: The automation part.
+File Layout/Mapping: Explains how the data is organized.
+Translation Rules: Any conversion logic needed.
+Sample/Mockup: Example outputs.
+Known Issues: Lists any risks or limitations.
+Appendices: Additional information if needed.
+Page 2 Explanation
+Summary
+Title: Enrollment Focus and Random ASA Extracts
+The document focuses on two types of extracts: Focus Audits and Random Audits related to ASA (Audit Specialists).
+
+Workstream:
+The workflow involves Enrollment processing.
+
+Document State:
+At this stage, it is a Proposed document, not yet final.
+
+Tickets:
+The work is linked to tickets for reference: IDEA0061370, DMND0607501, ENHC0038587.
+
+2.1 General Description
+Current System:
+The Quality Assurance team uses a manual process to audit enrollments and sends emails with results. This is time-consuming and can lead to errors.
+
+New Requirement:
+They want to move this process to MACESS, an auditing platform. They will need to extract new, reinstated, and terminated members from QNXT.
+
+Weekly Reports:
+Two reports are required:
+
+Focus Audit: Ten transactions per ASA.
+Random Audit: 3% of member account changes, excluding enrollments or terminations.
+Ad-Hoc Reports:
+Additionally, QA wants an on-demand (ADHOC) reporting feature using an external link in QNXT.
+
+Page 3 Explanation
+2.2 Business Requirements
+BR01:
+Create Focus and Random enrollment audits in XML format extracted from QNXT.
+
+BR02:
+Schedule the audit extracts to run automatically on a weekly basis.
+
+BR03:
+Set up an external link in QNXT to allow users to run ADHOC reports.
+
+2.3 Functional Requirements
+FR01 (Focus Audit):
+The Focus Audit XML extract will pull 10 random transactions (enrollment, termination, reinstatement) for each ASA or adjudicator. This mirrors the current CSC Job Program (ADHCB173.5.1).
+
+FR02 (Random Audit):
+The Random Audit will select 3% of all account changes made by enrollment specialists. This will also follow the ADHCB173.5.1 structure.
+
+FR03:
+The extracted files for Focus, Random, and ADHOC reports will have a standard layout, which is detailed later in the document.
+
+Page 4 Explanation
+Functional Requirements (Continued)
+FR04:
+The Focus and Random audits should run weekly on Monday, and the files will be named in the following format:
+
+FOCUS: EA_QNXT_Focus_yyyymmddhhmmss.xml
+RANDOM: EA_QNXT_Random_yyyymmddhhmmss.xml
+Where:
+
+yyyy: 4-digit year.
+mm: 2-digit month.
+dd: 2-digit day.
+hh, mm, ss: Time components.
+FR05:
+The audit files will be sent to specified folders in the internal system (Macess).
+
+FR06:
+Create an External Link Web Page in QNXT called "ASA Enrollment Audit." This will allow users to generate reports based on certain criteria.
+
+FR07:
+The external link will include prompts for ADHOC reporting, allowing selection based on:
+
+Enrollment Specialist.
+DSU (Data Service Units).
+Group or All.
+Dates, and more.
+Page 5 Explanation
+3. Technical Requirements
+Frequency:
+The extracts will run weekly every Monday.
+
+File Type:
+The extracts will be in XML format.
+
+URL Name:
+The name of the interface for external link access.
+
+3.1 Fields Required in XML Files
+The following fields are needed in both FOCUS, RANDOM, and ADHOC XML files:
+
+Enrollment Specialist Host Account:
+The ASA responsible for the transaction.
+
+Transaction Type:
+What type of action was taken (Enroll, Disenroll, or Change).
+
+Member ID:
+A unique identifier for each member.
+
+Member Name:
+The first and last name of the member.
+
+Effective Date:
+When the transaction became effective.
+
+Other required fields include the member’s address, phone numbers, SSN, gender, PCP (Primary Care Physician), and LOB (Line of Business) details.
+
+Page 6 Explanation
+3.1 Fields Required (Continued)
+Home Phone, Work Phone, Mobile Phone:
+The member’s contact numbers.
+
+SSN (Social Security Number):
+The unique identifier of the member, along with a reference date of when it was added.
+
+Date of Birth, Gender:
+Basic demographic information about the member.
+
+PCP:
+Primary care physician assigned to the member.
+
+Coverage Codes, Policy Number:
+Details related to the insurance or health plan.
+
+Page 7 and 8 Explanation
+3.2 Screens in QNXT that Contain Required Data
+This section provides the QNXT screens where relevant data for the audit can be found:
+
+MEMBER SUMMARY Screen:
+Shows demographic and PCP information.
+
+MEMBER > Eligibility Screen:
+Provides data on the member’s current health plan.
+
+MEMBER > Relationships Screen:
+Details the member’s relationships for eligibility purposes.
+
+MEMBER > Event History Screen:
+Logs the history of enrollment and other changes.
+
+MEMBER > Details Screen:
+Contains member contact details such as phone numbers and address.
+
+Page 9 Explanation
+4. Technical Approach
+FOCUS Audit:
+This mirrors the ADHCB173.5.1 CSC screen and will extract 10 Adds/Terms/reinstatements per week for each enrollment specialist.
+
+RANDOM Audit:
+This will follow the ADHCB173.5.1 job program and extract 3% of all member account changes, excluding enrollments/terms/reinstatements.
+
+ADHOC Reporting:
+The external link in QNXT will allow the Quality Assurance team to pull audit data on demand using specific prompts.
+
+I’ll continue breaking down each page like this until we’ve covered all 20 pages. Does this pace and level of detail work for you so far?
+
+
+
+
+
+
+You said:
+Continue 
+ChatGPT said:
+ChatGPT
+Page 10 Explanation
+4.1 FOCUS Audit Extract
+The FOCUS Audit will mirror the existing CSC program (ADHCB173.5.1), which means it will follow the same logic and structure.
+The primary goal is to extract 10 Adds, Terms, or Reinstatements per enrollment specialist per week. These are randomly selected from the previous week’s transactions.
+4.2 RANDOM Audit Extract
+Similar to the FOCUS audit, the RANDOM Audit will follow the ADHCB173.5.1 job program.
+It will extract 3% of all member account changes, excluding adds, terms, and reinstatements, that are completed by an enrollment specialist during the previous week.
+4.3 ADHOC Reporting out of QNXT External Link
+The ADHOC reporting will provide the Quality Assurance team the ability to manually pull audits from QNXT based on their custom criteria.
+The external link will be set up to allow the following prompts for users:
+Enrollment Specialist: Select an individual specialist or ALL.
+DSU: Group’s line of business.
+Groups: Ability to select specific groups or ALL.
+Begin Date and End Date: Timeframe for pulling audit data.
+Page 11 Explanation
+5. Job Scheduler
+Job Name: The automated job responsible for generating and sending the audit extracts is called QNXT_MACESS_Weekly_XML_ENROLLMENT_AUDIT_Outbound.
+
+File Path:
+The extracted XML files will be saved to specific folders:
+
+Production path: PROD:\\corp.ad.sentara.com\shpdfs\GA-External\Macess_CSC\Macess_OPS\DocFlo Distribution\ToDo
+Test path: TEST:\\corp.ad.sentara.com\shpdfs\GA-External\MacessTest_CSC\MACESS_OPS\DocFlo Distribution\ToDo
+This section essentially describes how and where the audit files will be saved and distributed.
+
+Page 12 Explanation
+6. Target File Layout/Mapping
+The extracted XML files for Focus, Random, and ADHOC audits will follow the same structure.
+Header Information: The XML file will start with a header section containing metadata about the file, such as:
+File Purpose: Defines that the file is for enrollment audits.
+File Description: A description of the type of audit (FOCUS or RANDOM).
+File Source: The source system (QNXT).
+Classifications Section:
+The classifications will include details about the audit, such as:
+The type of transaction.
+The specialist responsible.
+The member details.
+The date and time the audit was performed.
+Page 13 Explanation
+Additional XML Requirements
+Date Formatting:
+Any date fields (e.g., effective dates, enrollment dates) must be formatted as MM/DD/YYYY. For example, January 1st, 2024, should be written as 01/01/2024.
+
+Unique ID for Each Record:
+A unique ID will be generated for each audit record. The format will be:
+EAYYYYMMDDhhmmseq, where:
+
+EA: Enrollment Audit.
+YYYYMMDD: Date of extraction.
+hhmm: Time of extraction.
+seq: A 3-digit sequence number (e.g., 001, 002, 003).
+Enrollment Specialist Macess Account:
+The ID of the user who performed the audit must be included in the XML file. For example, if the user is Reggie Mano, the ID passed over would be REMANO.
+
+Page 14 Explanation
+7. Translation Rules
+This section will define any conversion or translation rules required during the extraction process, such as mapping internal codes or converting data formats.
+These rules ensure that data from QNXT is compatible with the MACESS system and follows the correct format.
+8. Sample Output/Data Layout
+Here, sample output files will be provided to show what the final XML audit files should look like. This includes examples of both FOCUS and RANDOM audit files.
+Page 15 Explanation
+9. Known Issues, Risks, Dependencies, or Limitations
+This section will list any potential issues or risks involved in implementing this audit extraction process.
+
+For example, issues may arise if data in QNXT is incomplete, or if there are problems with the automated job scheduler.
+
+Dependencies:
+This refers to any systems or processes that this audit extraction relies on, such as the QNXT system or the job scheduler.
+
+Page 16 Explanation
+10. Appendices and Other Attachments
+Output Data Requirements:
+
+Interface Type: This is a data extract interface.
+Source System: The data is coming from CSC System Account (MHC).
+Target Data Source: The data will be extracted from the QNXT Replicated Database.
+Output File Name/Naming Convention:
+The file names will follow the same convention mentioned earlier, with date and time components:
+
+EA_QNXT_Focus_yyyymmddhhmmss.xml (for FOCUS audits).
+EA_QNXT_Random_yyyymmddhhmmss.xml (for RANDOM audits).
+Page 17 Explanation
+Output File Format
+The extracted files will be in XML format.
+Output File Delimiter
+The XML file will use an asterisk (*) as the field delimiter and tilde (~) as the line delimiter.
+Frequency
+The audits will run weekly on Mondays, extracting data from the previous week.
+Page 18 Explanation
+Additional Mapping Information
+This page likely contains further mapping details for how data fields in QNXT correspond to the XML structure required for MACESS. It ensures that all fields from the QNXT system map to the right fields in the extracted XML files.
+
+Page 19 Explanation
+Sample Audit Extracts
+Here, sample XML files for both Focus and Random audits are provided. These samples illustrate how the data should be formatted and what values should be extracted.
+
+Each record includes data such as:
+
+Member ID.
+Enrollment Specialist.
+Transaction Type (e.g., Enroll, Disenroll).
+Effective Date.
+Audit Type (Focus or Random).
+Page 20 Explanation
+Final Classification and Record Structure
+Classifications:
+For each extracted record, multiple classifications are defined. For example:
+
+Classification Definition ID: A unique identifier for the classification.
+Value: The actual value related to the member or the transaction (e.g., Member Name, Date of Birth, etc.).
+Example Classification:
+
+For a member transaction, classifications could include:
+Member ID.
+Transaction Type.
+Effective Date.
+Enrollment Specialist Name.
+The XML file ends with the closing tags to ensure the structure is complete.
+
+This page-by-page explanation gives a comprehensive breakdown of the document and its contents. Each page builds on the technical requirements, describing how data will be extracted from QNXT and formatted into XML for auditing purposes in MACESS. If you'd like more details on any specific page or section, feel free to ask!
+
+
+
+
+
+
+
+
+
+
+
+ChatGPT can make
