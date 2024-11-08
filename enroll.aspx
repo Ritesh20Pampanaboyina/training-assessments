@@ -209,3 +209,34 @@
 </body>
 </html>
 
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Percentage_Enrollment_UI.aspx.cs" Inherits="Percentage_Enrollment_UI.Percentage_Enrollment_UI" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Percentage Enrollment Audit</title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <label for="ddlAuditType">Type of Audit (Primary):</label>
+            <asp:DropDownList ID="ddlAuditType" runat="server">
+                <asp:ListItem Value="FOCUS">FOCUS</asp:ListItem>
+                <asp:ListItem Value="RANDOM">RANDOM</asp:ListItem>
+                <asp:ListItem Value="ADHOC">ADHOC</asp:ListItem>
+            </asp:DropDownList>
+
+            <!-- Additional dropdown for AuditFileType2 -->
+            <label for="ddlAuditType2">Type of Audit (Secondary):</label>
+            <asp:DropDownList ID="ddlAuditType2" runat="server">
+                <asp:ListItem Value="FOCUS">FOCUS</asp:ListItem>
+                <asp:ListItem Value="RANDOM">RANDOM</asp:ListItem>
+                <asp:ListItem Value="ADHOC">ADHOC</asp:ListItem>
+            </asp:DropDownList>
+
+            <asp:Button ID="btnSubmit" runat="server" Text="Submit" OnClick="btnSubmit_Click" />
+            <asp:Label ID="lblMessage" runat="server" Visible="false" />
+        </div>
+    </form>
+</body>
+</html>
