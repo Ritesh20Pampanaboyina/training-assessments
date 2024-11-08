@@ -179,3 +179,62 @@ namespace Percentage_Enrollment_UI
         }
     }
 }
+
+
+
+using System;
+using System.Web.UI;
+
+namespace Percentage_Enrollment_UI
+{
+    public partial class Percentage_Enrollment_UI : Page
+    {
+        private DataAccessLayer dataAccess = new DataAccessLayer();
+
+        protected void btnSubmit_Click(object sender, EventArgs e)
+        {
+            string selectedAuditType = ddlAuditType.SelectedValue;
+
+            // Declare AuditFileType1 and AuditFileType2 variables
+            string auditFileType1 = selectedAuditType;
+            string auditFileType2 = ""; // Initially empty
+
+            // Apply custom logic to differentiate the two based on the selected value
+            if (selectedAuditType == "FOCUS")
+            {
+                // When FOCUS is selected, do not change AuditFileType2
+                auditFileType1 = "FOCUS";  // Set AuditFileType1 to "FOCUS"
+                auditFileType2 = "";  // Leave AuditFileType2 unchanged or null if needed
+            }
+            else if (selectedAuditType == "RANDOM")
+            {
+                // When RANDOM is selected, set AuditFileType2 to a specific value
+                auditFileType1 = "RANDOM"; // Set AuditFileType1 to "RANDOM"
+                auditFileType2 = "SPECIFIC"; // Set AuditFileType2 to "SPECIFIC" or any other value
+            }
+
+            // Call the data access method to submit the values for AuditFileType1 and AuditFileType2
+            dataAccess.SubmitAuditRequest(
+                auditFileType1,  // Set for AuditFileType1
+                auditFileType2,  // Set for AuditFileType2 (can be left blank if FOCUS is selected)
+                "", // Other fields as needed
+                "", 
+                "",
+                "",
+                "",
+                DateTime.Now, // Placeholder for start date
+                DateTime.Now, // Placeholder for end date
+                "" // Placeholder for selected programs
+            );
+
+            lblMessage.Text = "Audit request submitted successfully!";
+            lblMessage.Visible = true;
+        }
+
+        protected void btnReset_Click(object sender, EventArgs e)
+        {
+            ddlAuditType.SelectedIndex = 0; // Reset to default value
+            lblMessage.Visible = false;
+        }
+    }
+}
