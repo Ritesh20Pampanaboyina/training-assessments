@@ -1,0 +1,67 @@
+
+using System;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+
+namespace Percentage_Enrollment_UI
+{
+    public class DataAccessLayer
+    {
+        private string connectionString = ConfigurationManager.ConnectionStrings["CustomDB"].ConnectionString;
+
+        public DataTable GetPrograms()
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("Enrollment_GetProgram", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    conn.Open();
+
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+                        DataTable programs = new DataTable();
+                        adapter.Fill(programs);
+                        return programs;
+                    }
+                }
+            }
+        }
+
+        public void SubmitAuditRequest(
+            string AuditfileType1,
+            string AuditfileType2,
+            string enrollmentSpecialist,
+            string dsu,
+            string groups,
+            string addTerms,
+            string percentChanges,
+            DateTime startDate,
+            DateTime endDate,
+            string selectedPrograms)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SHPp_Percentage_Enrollment_Audit_Adhoc_Update", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@AuditFileType1", AuditfileType1);
+                    cmd.Parameters.AddWithValue("@AuditFileType2", AuditfileType2);
+                    cmd.Parameters.AddWithValue("@ChooseEnrollmentSpecialist", enrollmentSpecialist);
+                    cmd.Parameters.AddWithValue("@ChooseDSU", dsu);
+                    cmd.Parameters.AddWithValue("@SelectGroups", groups);
+                    cmd.Parameters.AddWithValue("@Adds_Terms", addTerms);
+                    cmd.Parameters.AddWithValue("@Percent_Member_Account_Changes", percentChanges);
+                    cmd.Parameters.AddWithValue("@start_Date", startDate);
+                    cmd.Parameters.AddWithValue("@end_Date", endDate);
+                    cmd.Parameters.AddWithValue("@SelectPrograms", selectedPrograms);
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+    }
+}
