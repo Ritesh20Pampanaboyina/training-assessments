@@ -1,4 +1,3 @@
-
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Percentage_Enrollment_UI.aspx.cs" Inherits="Percentage_Enrollment_UI.Percentage_Enrollment_UI" %>
 
 <!DOCTYPE html>
@@ -83,11 +82,49 @@
             margin-right: 10px;
             width: 15px;
             height: 15px;
-            accent-color: blue;
         }
 
         .program-id {
             flex-grow: 1;
+        }
+
+        /* Fix for Include/Exclude Boxes Visibility */
+        .include-exclude-box {
+            width: 200px;
+            height: 200px;
+            border: 1px solid #ccc;
+            overflow-y: auto;
+            margin-top: 10px;
+            padding: 5px;
+            display: inline-block;
+        }
+
+        .program-list-box {
+            width: 100%;
+            margin-bottom: 10px;
+            height: 150px;
+        }
+
+        .program-actions {
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        /* Flex layout for Select Programs and Include/Exclude sections */
+        .field-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .field-container > div {
+            width: 48%;
+        }
+
+        /* Ensure buttons are aligned correctly */
+        .form-buttons {
+            text-align: center;
+            margin-top: 20px;
         }
     </style>
     <script type="text/javascript">
@@ -106,11 +143,37 @@
             });
         }
 
-        window.onload = function() {
+        window.onload = function () {
             var selectAllCheckbox = document.getElementById('<%= chkSelectAll.ClientID %>');
             selectAllCheckbox.checked = true;
             toggleSelectAll(selectAllCheckbox);
         };
+
+        function addToInclude() {
+            var checkboxes = document.querySelectorAll('.program-checkbox:checked');
+            var includeList = document.getElementById('<%= ListBox_Program_Inc.ClientID %>');
+
+            checkboxes.forEach(function (checkbox) {
+                var programText = checkbox.nextElementSibling.innerText;
+                var option = document.createElement('option');
+                option.text = programText;
+                includeList.add(option);
+                checkbox.checked = false;  // Uncheck the box after adding
+            });
+        }
+
+        function addToExclude() {
+            var checkboxes = document.querySelectorAll('.program-checkbox:checked');
+            var excludeList = document.getElementById('<%= ListBox_Program_Exc.ClientID %>');
+
+            checkboxes.forEach(function (checkbox) {
+                var programText = checkbox.nextElementSibling.innerText;
+                var option = document.createElement('option');
+                option.text = programText;
+                excludeList.add(option);
+                checkbox.checked = false;  // Uncheck the box after adding
+            });
+        }
     </script>
 </head>
 <body>
@@ -118,6 +181,7 @@
         <h2>Percentage Enrollment Audit Adhoc Selection Criteria</h2>
 
         <div class="form-container">
+            <!-- Existing form fields for Audit Type, Enrollment Specialist, DSU, etc. -->
             <div class="form-group">
                 <label for="ddlAuditType">Type of Audit:</label>
                 <asp:DropDownList ID="ddlAuditType" runat="server">
@@ -127,53 +191,9 @@
                 </asp:DropDownList>
             </div>
 
-            <div class="form-group">
-                <label for="ddlEnrollmentSpecialist">Choose Enrollment Specialist:</label>
-                <asp:DropDownList ID="ddlEnrollmentSpecialist" runat="server">
-                    <asp:ListItem Value="ALL">ALL</asp:ListItem>
-                </asp:DropDownList>
-                <button class="add-btn" type="button">Add>></button>
-            </div>
-
-            <div class="form-group">
-                <label for="ddlDSU">Choose DSU:</label>
-                <asp:DropDownList ID="ddlDSU" runat="server">
-                    <asp:ListItem Value="ALL">ALL</asp:ListItem>
-                </asp:DropDownList>
-                <button class="add-btn" type="button">Add>></button>
-            </div>
-
-            <div class="form-group">
-                <label for="ddlGroups">Select Groups:</label>
-                <asp:DropDownList ID="ddlGroups" runat="server">
-                    <asp:ListItem Value="ALL">ALL</asp:ListItem>
-                </asp:DropDownList>
-                <button class="add-btn" type="button">Add>></button>
-            </div>
-
-            <div class="form-group">
-                <label for="txtAddsTerms"># of Adds/Terms:</label>
-                <asp:TextBox ID="txtAddsTerms" runat="server" MaxLength="5"></asp:TextBox>
-            </div>
-
-            <div class="form-group">
-                <label for="txtPercentChanges">% of Member Account Changes:</label>
-                <asp:TextBox ID="txtPercentChanges" runat="server" MaxLength="3"></asp:TextBox>
-            </div>
-
-            <div class="form-group">
-                <label for="txtBeginDate">Start Date:</label>
-                <asp:TextBox ID="txtBeginDate" runat="server" TextMode="Date"></asp:TextBox>
-            </div>
-
-            <div class="form-group">
-                <label for="txtEndDate">End Date:</label>
-                <asp:TextBox ID="txtEndDate" runat="server" TextMode="Date"></asp:TextBox>
-            </div>
-
-            <!-- Updated "Select Programs" section -->
-            <div class="form-group">
-                <div style="display: flex; align-items: flex-start;">
+            <!-- Select Programs and Include/Exclude boxes -->
+            <div class="form-group field-container">
+                <div>
                     <label for="programCheckboxes">Select Programs:</label>
                     <div class="program-checkboxes" id="programCheckboxes" runat="server">
                         <div class="program-item">
@@ -192,10 +212,28 @@
                         </asp:Repeater>
                     </div>
                 </div>
+
+                <!-- Include/Exclude Boxes -->
+                <div>
+                    <div class="include-exclude-box">
+                        <b>Include Programs</b><br />
+                        <select id="ListBox_Program_Inc" runat="server" multiple="multiple" size="10" class="program-list-box"></select>
+                        <br />
+                        <button type="button" class="add-btn" onclick="addToInclude()">Add to Include</button>
+                    </div>
+
+                    <div class="include-exclude-box">
+                        <b>Exclude Programs</b><br />
+                        <select id="ListBox_Program_Exc" runat="server" multiple="multiple" size="10" class="program-list-box"></select>
+                        <br />
+                        <button type="button" class="add-btn" onclick="addToExclude()">Add to Exclude</button>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-actions">
-                <asp:Button ID="btnSubmit" runat="server" Text="Submit Audit Request" CssClass="submit-btn" OnClick="btnSubmit_Click" />
+            <!-- Form Actions -->
+            <div class="form-buttons">
+                <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="submit-btn" OnClick="btnSubmit_Click" />
                 <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="reset-btn" OnClick="btnReset_Click" />
             </div>
 
@@ -205,38 +243,6 @@
         <p>**Green Submit button indicates Request not submitted in this 30 min slot**<br />
            **Please Click Reset Button to reset all the fields**
         </p>
-    </form>
-</body>
-</html>
-
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Percentage_Enrollment_UI.aspx.cs" Inherits="Percentage_Enrollment_UI.Percentage_Enrollment_UI" %>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Percentage Enrollment Audit</title>
-</head>
-<body>
-    <form id="form1" runat="server">
-        <div>
-            <label for="ddlAuditType">Type of Audit (Primary):</label>
-            <asp:DropDownList ID="ddlAuditType" runat="server">
-                <asp:ListItem Value="FOCUS">FOCUS</asp:ListItem>
-                <asp:ListItem Value="RANDOM">RANDOM</asp:ListItem>
-                <asp:ListItem Value="ADHOC">ADHOC</asp:ListItem>
-            </asp:DropDownList>
-
-            <!-- Additional dropdown for AuditFileType2 -->
-            <label for="ddlAuditType2">Type of Audit (Secondary):</label>
-            <asp:DropDownList ID="ddlAuditType2" runat="server">
-                <asp:ListItem Value="FOCUS">FOCUS</asp:ListItem>
-                <asp:ListItem Value="RANDOM">RANDOM</asp:ListItem>
-                <asp:ListItem Value="ADHOC">ADHOC</asp:ListItem>
-            </asp:DropDownList>
-
-            <asp:Button ID="btnSubmit" runat="server" Text="Submit" OnClick="btnSubmit_Click" />
-            <asp:Label ID="lblMessage" runat="server" Visible="false" />
-        </div>
     </form>
 </body>
 </html>
