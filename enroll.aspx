@@ -1,137 +1,249 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="YourPage.aspx.cs" Inherits="YourNamespace_YourPage" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Percentage_Enrollment_UI.aspx.cs" Inherits="Percentage_Enrollment_UI.Percentage_Enrollment_UI" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Percentage Enrollment Audit Adhoc Selection Criteria</title>
+    <title>Percentage Enrollment UI</title>
     <style>
-        /* CSS Styling */
-        .form-group {
-            margin-bottom: 20px;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
         }
 
-        .dropdown-button-group, .include-exclude-box {
+        h2 {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .form-container {
+            border: 1px solid #ccc;
+            padding: 20px;
             margin-top: 10px;
         }
 
-        .add-btn {
-            margin-left: 10px;
-            background-color: #28a745;
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: inline-block;
+            width: 220px;
+        }
+
+        input[type="text"], input[type="date"], select {
+            padding: 5px;
+            width: 250px;
+        }
+
+        .add-btn, .submit-btn, .reset-btn {
+            padding: 5px 15px;
             color: white;
-            padding: 5px 10px;
             border: none;
             cursor: pointer;
+            margin-left: 10px;
         }
 
-        .include-exclude-box {
-            display: inline-block;
-            margin-right: 20px;
-            vertical-align: top;
+        .add-btn {
+            background-color: #4CAF50;
         }
 
-        .program-list-box {
-            width: 200px;
+        .submit-btn {
+            background-color: #28a745;
+        }
+
+        .reset-btn {
+            background-color: #007bff;
+        }
+
+        .form-actions {
+            margin-top: 20px;
+            text-align: right;
         }
 
         .program-checkboxes {
-            max-height: 200px;
-            overflow-y: auto;
             border: 1px solid #ccc;
-            padding: 10px;
-            width: 100%;
+            padding: 5px;
+            height: 200px;
+            width: 200px;
+            overflow-y: scroll;
+            margin-top: 5px;
         }
 
         .program-item {
             display: flex;
             align-items: center;
+            margin-bottom: 5px;
         }
 
-        .program-item label {
-            margin-left: 5px;
+        .program-checkbox {
+            margin-right: 10px;
+            width: 15px;
+            height: 15px;
+        }
+
+        .program-id {
+            flex-grow: 1;
+        }
+
+        .include-exclude-box {
+            width: 200px;
+            height: 200px;
+            border: 1px solid #ccc;
+            overflow-y: auto;
+            margin-top: 10px;
+            padding: 5px;
+            display: inline-block;
+        }
+
+        .program-list-box {
+            width: 100%;
+            margin-bottom: 10px;
+            height: 150px;
+        }
+
+        .program-actions {
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        /* Layout adjustments */
+        .field-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .field-container > div {
+            width: 48%;
+        }
+
+        .dropdown-button-group {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .dropdown-button-group select {
+            margin-right: 10px;
+            padding: 5px;
+            width: 180px;
+        }
+
+        /* Ensure buttons are aligned correctly */
+        .form-buttons {
+            text-align: center;
+            margin-top: 20px;
         }
     </style>
-    <script>
-        // JavaScript for Select All functionality
+    <script type="text/javascript">
         function toggleSelectAll(selectAllCheckbox) {
-            let checkboxes = document.querySelectorAll('.program-checkbox');
-            checkboxes.forEach(checkbox => {
-                if (checkbox !== selectAllCheckbox) {
-                    checkbox.checked = selectAllCheckbox.checked;
-                }
+            var checkboxes = document.querySelectorAll('.program-checkbox');
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = selectAllCheckbox.checked;
             });
         }
 
         function updateSelectAllCheckbox() {
-            let checkboxes = document.querySelectorAll('.program-checkbox:not(#chkSelectAll)');
-            let allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-            document.getElementById('chkSelectAll').checked = allChecked;
+            var checkboxes = document.querySelectorAll('.program-checkbox');
+            var selectAllCheckbox = document.getElementById('<%= chkSelectAll.ClientID %>');
+            selectAllCheckbox.checked = Array.from(checkboxes).every(function (checkbox) {
+                return checkbox.checked;
+            });
+        }
+
+        function addToInclude() {
+            var checkboxes = document.querySelectorAll('.program-checkbox:checked');
+            var includeList = document.getElementById('<%= ListBox_Program_Inc.ClientID %>');
+
+            checkboxes.forEach(function (checkbox) {
+                var programText = checkbox.nextElementSibling.innerText;
+                var option = document.createElement('option');
+                option.text = programText;
+                includeList.add(option);
+                checkbox.checked = false;  // Uncheck the box after adding
+            });
+        }
+
+        function addToExclude() {
+            var checkboxes = document.querySelectorAll('.program-checkbox:checked');
+            var excludeList = document.getElementById('<%= ListBox_Program_Exc.ClientID %>');
+
+            checkboxes.forEach(function (checkbox) {
+                var programText = checkbox.nextElementSibling.innerText;
+                var option = document.createElement('option');
+                option.text = programText;
+                excludeList.add(option);
+                checkbox.checked = false;  // Uncheck the box after adding
+            });
         }
     </script>
 </head>
 <body>
     <form id="form1" runat="server">
-        <div class="form-group field-container">
-            <!-- Type of Audit Dropdown -->
-            <div>
+        <h2>Percentage Enrollment Audit Adhoc Selection Criteria</h2>
+
+        <div class="form-container">
+            <div class="form-group">
                 <label for="ddlAuditType">Type of Audit:</label>
                 <asp:DropDownList ID="ddlAuditType" runat="server">
                     <asp:ListItem Value="FOCUS">FOCUS</asp:ListItem>
-                    <asp:ListItem Value="AUDIT">AUDIT</asp:ListItem>
-                    <!-- Additional options as needed -->
+                    <asp:ListItem Value="RANDOM">RANDOM</asp:ListItem>
+                    <asp:ListItem Value="ADHOC">ADHOC</asp:ListItem>
                 </asp:DropDownList>
             </div>
 
-            <!-- Select Programs Checkbox List with Select All -->
-            <div>
-                <label for="programCheckboxes">Select Programs:</label>
-                <div class="program-checkboxes" id="programCheckboxes" runat="server">
-                    <div class="program-item">
-                        <asp:CheckBox ID="chkSelectAll" runat="server" CssClass="program-checkbox" 
-                                      OnClientClick="toggleSelectAll(this); return false;" />
-                        <label>Select All</label>
+            <div class="form-group field-container">
+                <div>
+                    <label for="programCheckboxes">Select Programs:</label>
+                    <div class="program-checkboxes" id="programCheckboxes" runat="server">
+                        <div class="program-item">
+                            <asp:CheckBox ID="chkSelectAll" runat="server" CssClass="program-checkbox" 
+                                          OnClientClick="toggleSelectAll(this); return false;" />
+                            <label>Select All</label>
+                        </div>
+                        <asp:Repeater ID="rptPrograms" runat="server">
+                            <ItemTemplate>
+                                <div class="program-item">
+                                    <asp:CheckBox ID="chkProgram" runat="server" CssClass="program-checkbox" 
+                                                  OnClick="updateSelectAllCheckbox()" />
+                                    <label class="program-id"><%# Eval("ProgramId") %></label>
+                                </div>
+                            </ItemTemplate>
+                        </asp:Repeater>
                     </div>
-                    <asp:Repeater ID="rptPrograms" runat="server">
-                        <ItemTemplate>
-                            <div class="program-item">
-                                <asp:CheckBox ID="chkProgram" runat="server" CssClass="program-checkbox" 
-                                              OnClick="updateSelectAllCheckbox()" />
-                                <label class="program-id"><%# Eval("ProgramId") %></label>
-                            </div>
-                        </ItemTemplate>
-                    </asp:Repeater>
+                </div>
+
+                <!-- Dropdown, Add Button, Include and Exclude boxes -->
+                <div>
+                    <div class="dropdown-button-group">
+                        <select>
+                            <option>Please Select</option>
+                        </select>
+                        <button type="button" class="add-btn">Add &gt;&gt;</button>
+                    </div>
+
+                    <div class="include-exclude-box">
+                        <b>Include Programs</b><br />
+                        <select id="ListBox_Program_Inc" runat="server" multiple="multiple" size="10" class="program-list-box"></select>
+                    </div>
+
+                    <div class="include-exclude-box">
+                        <b>Exclude Programs</b><br />
+                        <select id="ListBox_Program_Exc" runat="server" multiple="multiple" size="10" class="program-list-box"></select>
+                    </div>
                 </div>
             </div>
 
-            <!-- Dropdown, Add Button, Include and Exclude boxes -->
-            <div>
-                <!-- Dropdown Button Group -->
-                <div class="dropdown-button-group">
-                    <label for="ddlPrograms">Programs:</label>
-                    <asp:DropDownList ID="ddlPrograms" runat="server">
-                        <asp:ListItem Value="">Please Select</asp:ListItem>
-                        <asp:ListItem Value="Program1">Program 1</asp:ListItem>
-                        <asp:ListItem Value="Program2">Program 2</asp:ListItem>
-                        <!-- Add additional items here as needed -->
-                    </asp:DropDownList>
-                    <asp:Button ID="btnAdd" runat="server" Text="Add >>" CssClass="add-btn" />
-                </div>
-
-                <!-- Include Programs Box -->
-                <div class="include-exclude-box">
-                    <b>Include Programs</b><br />
-                    <asp:ListBox ID="ListBox_Program_Inc" runat="server" SelectionMode="Multiple" CssClass="program-list-box"></asp:ListBox>
-                </div>
-
-                <!-- Exclude Programs Box -->
-                <div class="include-exclude-box">
-                    <b>Exclude Programs</b><br />
-                    <asp:ListBox ID="ListBox_Program_Exc" runat="server" SelectionMode="Multiple" CssClass="program-list-box"></asp:ListBox>
-                </div>
+            <div class="form-buttons">
+                <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="submit-btn" OnClick="btnSubmit_Click" />
+                <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="reset-btn" OnClick="btnReset_Click" />
             </div>
+
+            <asp:Label ID="lblMessage" runat="server" ForeColor="Green" Visible="false"></asp:Label>
         </div>
-
-        <asp:Button ID="btnSubmit" runat="server" Text="Submit Audit Request" CssClass="submit-btn" />
-        <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="reset-btn" />
     </form>
 </body>
 </html>
