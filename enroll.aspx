@@ -88,12 +88,20 @@
             flex-grow: 1;
         }
 
-        /* New Flex layout for Select Programs, Dropdown, Button, and Include/Exclude sections */
-        .field-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .include-exclude-box {
+            width: 200px;
+            height: 200px;
+            border: 1px solid #ccc;
+            overflow-y: auto;
             margin-top: 10px;
+            padding: 5px;
+            display: inline-block;
+        }
+
+        .program-list-box {
+            width: 100%;
+            margin-bottom: 10px;
+            height: 150px;
         }
 
         .program-actions {
@@ -101,25 +109,33 @@
             margin-top: 5px;
         }
 
-        /* Include and Exclude boxes style */
-        .include-exclude-box {
-            width: 150px;
-            height: 200px;
-            border: 1px solid #ccc;
-            overflow-y: auto;
-            padding: 5px;
+        /* Layout adjustments */
+        .field-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
         }
 
+        .field-container > div {
+            width: 48%;
+        }
+
+        .dropdown-button-group {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .dropdown-button-group select {
+            margin-right: 10px;
+            padding: 5px;
+            width: 180px;
+        }
+
+        /* Ensure buttons are aligned correctly */
         .form-buttons {
             text-align: center;
             margin-top: 20px;
-        }
-
-        /* Dropdown and Add Button style adjustments */
-        .dropdown-button-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
     </style>
     <script type="text/javascript">
@@ -170,7 +186,6 @@
         <h2>Percentage Enrollment Audit Adhoc Selection Criteria</h2>
 
         <div class="form-container">
-            <!-- Audit Type dropdown -->
             <div class="form-group">
                 <label for="ddlAuditType">Type of Audit:</label>
                 <asp:DropDownList ID="ddlAuditType" runat="server">
@@ -180,7 +195,6 @@
                 </asp:DropDownList>
             </div>
 
-            <!-- Select Programs, Dropdown, Add Button, and Include/Exclude containers -->
             <div class="form-group field-container">
                 <div>
                     <label for="programCheckboxes">Select Programs:</label>
@@ -202,15 +216,15 @@
                     </div>
                 </div>
 
-                <div class="dropdown-button-group">
-                    <asp:DropDownList ID="ddlProgramSelect" runat="server" Width="150px">
-                        <asp:ListItem Text="Please Select" Value=""></asp:ListItem>
-                        <!-- Add other items dynamically if needed -->
-                    </asp:DropDownList>
-                    <button type="button" class="add-btn" onclick="addToInclude()">Add &gt;&gt;</button>
-                </div>
-
+                <!-- Dropdown, Add Button, Include and Exclude boxes -->
                 <div>
+                    <div class="dropdown-button-group">
+                        <select>
+                            <option>Please Select</option>
+                        </select>
+                        <button type="button" class="add-btn">Add &gt;&gt;</button>
+                    </div>
+
                     <div class="include-exclude-box">
                         <b>Include Programs</b><br />
                         <select id="ListBox_Program_Inc" runat="server" multiple="multiple" size="10" class="program-list-box"></select>
@@ -223,7 +237,6 @@
                 </div>
             </div>
 
-            <!-- Form Actions -->
             <div class="form-buttons">
                 <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="submit-btn" OnClick="btnSubmit_Click" />
                 <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="reset-btn" OnClick="btnReset_Click" />
