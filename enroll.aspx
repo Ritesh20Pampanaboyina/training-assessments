@@ -88,21 +88,12 @@
             flex-grow: 1;
         }
 
-        /* Fix for Include/Exclude Boxes Visibility */
-        .include-exclude-box {
-            width: 200px;
-            height: 200px;
-            border: 1px solid #ccc;
-            overflow-y: auto;
+        /* New Flex layout for Select Programs, Dropdown, Button, and Include/Exclude sections */
+        .field-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             margin-top: 10px;
-            padding: 5px;
-            display: inline-block;
-        }
-
-        .program-list-box {
-            width: 100%;
-            margin-bottom: 10px;
-            height: 150px;
         }
 
         .program-actions {
@@ -110,21 +101,25 @@
             margin-top: 5px;
         }
 
-        /* Flex layout for Select Programs and Include/Exclude sections */
-        .field-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+        /* Include and Exclude boxes style */
+        .include-exclude-box {
+            width: 150px;
+            height: 200px;
+            border: 1px solid #ccc;
+            overflow-y: auto;
+            padding: 5px;
         }
 
-        .field-container > div {
-            width: 48%;
-        }
-
-        /* Ensure buttons are aligned correctly */
         .form-buttons {
             text-align: center;
             margin-top: 20px;
+        }
+
+        /* Dropdown and Add Button style adjustments */
+        .dropdown-button-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
     </style>
     <script type="text/javascript">
@@ -142,12 +137,6 @@
                 return checkbox.checked;
             });
         }
-
-        window.onload = function () {
-            var selectAllCheckbox = document.getElementById('<%= chkSelectAll.ClientID %>');
-            selectAllCheckbox.checked = true;
-            toggleSelectAll(selectAllCheckbox);
-        };
 
         function addToInclude() {
             var checkboxes = document.querySelectorAll('.program-checkbox:checked');
@@ -181,7 +170,7 @@
         <h2>Percentage Enrollment Audit Adhoc Selection Criteria</h2>
 
         <div class="form-container">
-            <!-- Existing form fields for Audit Type, Enrollment Specialist, DSU, etc. -->
+            <!-- Audit Type dropdown -->
             <div class="form-group">
                 <label for="ddlAuditType">Type of Audit:</label>
                 <asp:DropDownList ID="ddlAuditType" runat="server">
@@ -191,7 +180,7 @@
                 </asp:DropDownList>
             </div>
 
-            <!-- Select Programs and Include/Exclude boxes -->
+            <!-- Select Programs, Dropdown, Add Button, and Include/Exclude containers -->
             <div class="form-group field-container">
                 <div>
                     <label for="programCheckboxes">Select Programs:</label>
@@ -213,20 +202,23 @@
                     </div>
                 </div>
 
-                <!-- Include/Exclude Boxes -->
+                <div class="dropdown-button-group">
+                    <asp:DropDownList ID="ddlProgramSelect" runat="server" Width="150px">
+                        <asp:ListItem Text="Please Select" Value=""></asp:ListItem>
+                        <!-- Add other items dynamically if needed -->
+                    </asp:DropDownList>
+                    <button type="button" class="add-btn" onclick="addToInclude()">Add &gt;&gt;</button>
+                </div>
+
                 <div>
                     <div class="include-exclude-box">
                         <b>Include Programs</b><br />
                         <select id="ListBox_Program_Inc" runat="server" multiple="multiple" size="10" class="program-list-box"></select>
-                        <br />
-                        <button type="button" class="add-btn" onclick="addToInclude()">Add to Include</button>
                     </div>
 
                     <div class="include-exclude-box">
                         <b>Exclude Programs</b><br />
                         <select id="ListBox_Program_Exc" runat="server" multiple="multiple" size="10" class="program-list-box"></select>
-                        <br />
-                        <button type="button" class="add-btn" onclick="addToExclude()">Add to Exclude</button>
                     </div>
                 </div>
             </div>
@@ -239,10 +231,6 @@
 
             <asp:Label ID="lblMessage" runat="server" ForeColor="Green" Visible="false"></asp:Label>
         </div>
-
-        <p>**Green Submit button indicates Request not submitted in this 30 min slot**<br />
-           **Please Click Reset Button to reset all the fields**
-        </p>
     </form>
 </body>
 </html>
