@@ -41,8 +41,8 @@ namespace Percentage_Enrollment_UI
             string excludedPrograms = GetExcludedPrograms();
 
             // Ensure date values are provided and parse them
-            DateTime beginDate, endDate;
-            if (!DateTime.TryParse(txtBeginDate.Text, out beginDate))
+            DateTime startDate, endDate;
+            if (!DateTime.TryParse(txtBeginDate.Text, out startDate))
             {
                 lblMessage.Text = "Please enter a valid Begin Date.";
                 lblMessage.Visible = true;
@@ -57,14 +57,14 @@ namespace Percentage_Enrollment_UI
 
             // Call the stored procedure with collected values
             dataAccess.SubmitAuditRequest(
-                ddlAuditType.SelectedValue,
-                ddlAuditType.SelectedValue,
+                ddlAuditType.SelectedValue,  // For AuditFileType1
+                ddlAuditType.SelectedValue,  // For AuditFileType2 (could be different if needed)
                 ddlEnrollmentSpecialist.SelectedValue,
                 ddlDSU.SelectedValue,
                 ddlGroups.SelectedValue,
                 txtAddsTerms.Text,
                 txtPercentChanges.Text,
-                beginDate,
+                startDate,  // Corrected variable name to startDate
                 endDate,
                 includedPrograms,
                 excludedPrograms
