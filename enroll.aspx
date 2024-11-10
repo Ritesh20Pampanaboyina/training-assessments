@@ -245,10 +245,12 @@
 
                 <!-- Please Select Dropdown + Add Button -->
                 <div class="dropdown-button-group">
-                    <select>
-                        <option>Please Select</option>
+                    <label for="ddlIncludeExclude">Please Select:</label>
+                    <select id="ddlIncludeExclude">
+                        <option value="Include">Include</option>
+                        <option value="Exclude">Exclude</option>
                     </select>
-                    <button type="button" class="add-btn" onclick="addToInclude()">Add>></button>
+                    <button type="button" class="add-btn" onclick="addToIncludeExclude()">Add>></button>
                 </div>
 
                 <!-- Include/Exclude Boxes -->
@@ -279,5 +281,58 @@
             </div>
         </div>
     </form>
+    <script type="text/javascript">
+        function addToIncludeExclude() {
+            var dropdown = document.getElementById("ddlIncludeExclude");
+            var selectedOption = dropdown.options[dropdown.selectedIndex].value;
+
+            // Get the selected programs
+            var selectedPrograms = [];
+            var checkboxes = document.querySelectorAll(".program-checkbox:checked");
+
+            checkboxes.forEach(function (checkbox) {
+                selectedPrograms.push(checkbox.parentNode.querySelector(".program-id").innerText);
+            });
+
+            if (selectedPrograms.length === 0) {
+                alert("Please select at least one program to add.");
+                return;
+            }
+
+            // Move selected programs to the appropriate list based on dropdown selection
+            var listBox = (selectedOption === "Include") ? document.getElementById("<%= ListBox_Program_Inc.ClientID %>") : document.getElementById("<%= ListBox_Program_Exc.ClientID %>");
+
+            selectedPrograms.forEach(function(program) {
+                var option = document.createElement("option");
+                option.text = program;
+                listBox.add(option);
+            });
+
+            // Optionally, deselect the checkboxes after adding
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = false;
+            });
+        }
+
+        function toggleSelectAll(checkbox) {
+            var isChecked = checkbox.checked;
+            var allCheckboxes = document.querySelectorAll(".program-checkbox");
+
+            allCheckboxes.forEach(function(chk) {
+                chk.checked = isChecked;
+            });
+        }
+
+        function updateSelectAllCheckbox() {
+            var allCheckboxes = document.querySelectorAll(".program-checkbox");
+            var selectAllCheckbox = document.getElementById("<%= chkSelectAll.ClientID %>");
+
+            var allChecked = Array.from(allCheckboxes).every(function (chk) {
+                return chk.checked;
+            });
+
+            selectAllCheckbox.checked = allChecked;
+        }
+    </script>
 </body>
 </html>
