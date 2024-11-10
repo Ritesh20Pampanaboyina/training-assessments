@@ -320,3 +320,44 @@
     </script>
 </body>
 </html>
+
+
+
+<div class="program-selection">
+    <!-- Left Section: Program Checkboxes -->
+    <div class="checkbox-container">
+        <label for="programs" class="section-title">Program Name:</label>
+        <input type="checkbox" id="selectAllPrograms" onclick="toggleAllPrograms()"> All Programs
+        <div id="programCheckboxes">
+            <!-- Individual Program Checkboxes (loaded dynamically or hardcoded) -->
+            <input type="checkbox" name="programs" value="Program1"> Program1<br>
+            <input type="checkbox" name="programs" value="Program2"> Program2<br>
+            <input type="checkbox" name="programs" value="Program3"> Program3<br>
+            <!-- Add more program checkboxes as needed -->
+        </div>
+    </div>
+
+    <!-- Center Section: Dropdown and Add Button -->
+    <div class="center-section">
+        <select id="actionDropdown">
+            <option value="">Please select</option>
+            <option value="Include">Include</option>
+            <option value="Exclude">Exclude</option>
+        </select>
+        <button onclick="addSelectedPrograms()">Add &gt;&gt;</button>
+    </div>
+
+    <!-- Right Section: Include and Exclude Lists -->
+    <div class="include-exclude-container">
+        <div class="include-box">
+            <label class="section-title">Include</label>
+            <select id="includeList" size="10" multiple></select>
+            <a href="#" onclick="removeSelected('includeList')">Remove</a>
+        </div>
+        <div class="exclude-box">
+            <label class="section-title">Exclude</label>
+            <select id="excludeList" size="10" multiple></select>
+            <a href="#" onclick="removeSelected('excludeList')">Remove</a>
+        </div>
+    </div>
+</div>
