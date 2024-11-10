@@ -98,7 +98,7 @@
         /* Adjustments to the horizontal layout */
         .select-programs-container {
             display: flex;
-            align-items: center; /* Center align vertically */
+            align-items: flex-start; /* Center align vertically */
             justify-content: flex-start;
             width: 100%;
             margin-bottom: 15px;
@@ -107,31 +107,40 @@
         /* Select Programs Section */
         .program-checkboxes-container {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             justify-content: flex-start;
-            width: 25%; /* 25% width for Select Programs container */
+            width: 35%; /* 25% width for Select Programs container */
             margin-right: 15px; /* Space between Select Programs and next elements */
         }
 
         /* Dropdown + Add Button Section */
         .dropdown-button-group {
             display: flex;
-            flex-direction: column; /* Align the dropdown and button vertically */
+            flex-direction: row; /* Align the dropdown and button vertically */
+            justify-content: center;
             align-items: flex-start;
             margin-right: 20px;
         }
 
-        /* Include/Exclude Boxes Section */
         .include-exclude-boxes {
             display: flex;
             justify-content: space-between;
-            align-items: center; /* Center align vertically */
-            width: 45%; /* Make sure it takes 45% width */
+            align-items: flex-start; /* Center align vertically */
+            width: 40%; /* Keep this as is or adjust to fit your layout */
+            flex-direction: row; /* Change from row to column to stack them vertically */
         }
 
         .include-exclude-box {
-            width: 48%; /* Adjusting size of Include/Exclude boxes */
+            width: 90%; /* Adjust width to 100% of the container */
+            height: 200px; /* Increase height to make the boxes bigger vertically */
+            overflow-y: auto; /* Add scroll bar if content overflows */
+            margin-bottom: 10px; /* Add spacing between boxes */
         }
+
+        .program-list-box {
+            height: 90%; /* Make the list box take most of the container height */
+        }
+
 
     </style>
     <script type="text/javascript">
@@ -248,7 +257,7 @@
                     <select>
                         <option>Please Select</option>
                     </select>
-                    <button type="button" class="add-btn" onclick="addToInclude()">Add &gt;&gt;</button>
+                    <button type="button" class="add-btn" onclick="addToInclude()">Add>></button>
                 </div>
 
                 <!-- Include/Exclude Boxes -->
@@ -278,36 +287,3 @@
     </form>
 </body>
 </html>
-
-
-.select-programs-container {
-    display: flex;
-    align-items: flex-start; /* Align items to the top */
-    justify-content: flex-start;
-    width: 100%;
-    margin-bottom: 15px;
-}
-
-.program-checkboxes-container {
-    width: 30%; /* Increase width for better alignment */
-    margin-right: 15px;
-}
-
-.dropdown-button-group {
-    display: flex;
-    flex-direction: column; /* Align dropdown and button vertically */
-    justify-content: center; /* Center within the column */
-    margin-right: 20px;
-    height: 100%; /* Fill available space vertically */
-}
-
-.include-exclude-boxes {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start; /* Align items to the top */
-    width: 40%; /* Adjust width */
-}
-
-.include-exclude-box {
-    width: 48%; /* Adjusting size of Include/Exclude boxes */
-}
