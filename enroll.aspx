@@ -5,123 +5,160 @@
 <head runat="server">
     <title>Percentage Enrollment UI</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
 
-        h2 {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            font-size: 20px;
-        }
+    h2 {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        font-size: 20px;
+    }
 
-        .form-container {
-            border: 1px solid #ccc;
-            padding: 20px;
-            margin-top: 10px;
-        }
+    .form-container {
+        border: 1px solid #ccc;
+        padding: 20px;
+        margin-top: 10px;
+    }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+    .form-group {
+        margin-bottom: 15px;
+    }
 
-        label {
-            display: inline-block;
-            width: 220px;
-        }
+    label {
+        display: inline-block;
+        width: 220px;
+    }
 
-        input[type="text"], input[type="date"], select {
-            padding: 5px;
-            width: 250px;
-        }
+    input[type="text"], input[type="date"], select {
+        padding: 5px;
+        width: 250px;
+    }
 
-        .add-btn, .submit-btn, .reset-btn {
-            padding: 5px 10px;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin-left: 10px;
-        }
+    .add-btn, .submit-btn, .reset-btn {
+        padding: 5px 10px;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-left: 10px;
+    }
 
-        .add-btn {
-            background-color: #4CAF50;
-            font-size: 14px;
-            padding: 5px 10px;
-        }
+    .add-btn {
+        background-color: #4CAF50;
+        font-size: 14px;
+        padding: 5px 10px;
+    }
 
-        .submit-btn {
-            background-color: #28a745;
-        }
+    .submit-btn {
+        background-color: #28a745;
+    }
 
-        .reset-btn {
-            background-color: #007bff;
-        }
+    .reset-btn {
+        background-color: #007bff;
+    }
 
-        .form-actions {
-            margin-top: 20px;
-            text-align: right;
-        }
+    .form-actions {
+        margin-top: 20px;
+        text-align: right;
+    }
 
-        .program-checkboxes {
-            border: 1px solid #ccc;
-            padding: 5px;
-            height: 200px;
-            width: 180px;
-            overflow-y: scroll;
-            margin-top: 5px;
-        }
+    .program-checkboxes {
+        border: 1px solid #ccc;
+        padding: 5px;
+        height: 200px;
+        width: 180px; /* Same width as the "Include/Exclude" boxes */
+        overflow-y: auto;
+        margin-top: 5px;
+    }
 
-        .program-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 5px;
-        }
+    .program-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
 
-        .program-checkbox {
-            margin-right: 10px;
-            width: 15px;
-            height: 15px;
-            accent-color: blue;
-        }
+    .program-checkbox {
+        margin-right: 10px;
+        width: 15px;
+        height: 15px;
+        accent-color: blue;
+    }
 
-        .program-id {
-            flex-grow: 1;
-        }
+    .program-id {
+        flex-grow: 1;
+    }
 
-        .include-exclude-boxes {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            width: 100%;
-        }
+    .include-exclude-box {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        overflow-y: hidden; /* Remove scrolling */
+        padding: 5px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        height: 150px; /* Adjusted box height */
+        width: 150px; /* Adjusted box width */
+        background-color: #f9f9f9; /* Light background for visibility */
+    }
 
-        .include-exclude-box {
-            width: 48%;
-            height: 250px;
-            overflow-y: auto;
-            padding: 5px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
+    /* Adjustments to the horizontal layout */
+    .select-programs-container {
+        display: flex;
+        align-items: flex-start; /* Center align vertically */
+        justify-content: flex-start;
+        width: 100%;
+        margin-bottom: 15px;
+    }
 
-        .include-exclude-box b {
-            display: block;
-            margin-bottom: 5px;
-        }
+    /* Select Programs Section */
+    .program-checkboxes-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        width: 35%; /* 35% width for Select Programs container */
+        margin-right: 15px; /* Space between Select Programs and next elements */
+    }
 
-        /* Style for the instructions text at the bottom */
-        .instructions-text {
-            font-size: 12px;
-            color: #555;
-            margin-top: 20px;
-            padding-top: 10px;
-            border-top: 1px solid #ccc;
-            text-align: left;
-        }
-    </style>
+    /* Include & Exclude Boxes Section (Aligned Side by Side with minimal gap) */
+    .include-exclude-boxes {
+        display: flex;
+        justify-content: flex-start; /* Align boxes side by side */
+        align-items: flex-start; /* Align items to the top */
+        width: 60%; /* Ensure both boxes fit together in the remaining space */
+    }
+
+    .include-exclude-box {
+        width: 150px; /* Same width for both boxes */
+        height: 150px; /* Adjusted height for both boxes */
+        margin-right: 5px; /* Small gap between the boxes */
+        overflow-y: hidden; /* Remove scroll */
+        background-color: #f9f9f9; /* Light background for visibility */
+    }
+
+    /* Ensure no margin for the last box */
+    .include-exclude-box:last-child {
+        margin-right: 0;
+    }
+
+    .program-list-box {
+        height: 90%; /* Make the list box take most of the container height */
+    }
+
+    /* Style for the instructions text at the bottom */
+    .instructions-text {
+        font-size: 12px;
+        color: #555;
+        margin-top: 20px;
+        padding-top: 10px;
+        border-top: 1px solid #ccc;
+        text-align: left;
+    }
+</style>
+
+
 </head>
 <body>
     <form id="form1" runat="server">
@@ -186,36 +223,47 @@
             </div>
 
             <!-- Select Programs Section -->
-            <div class="form-group">
-                <label for="programCheckboxes">Select Programs:</label>
-                <div class="program-checkboxes" id="programCheckboxes" runat="server">
-                    <div class="program-item">
-                        <asp:CheckBox ID="chkSelectAll" runat="server" CssClass="program-checkbox" 
-                                      OnClientClick="toggleSelectAll(this); return false;" 
-                                      OnCheckedChanged="chkSelectAll_CheckedChanged" AutoPostBack="true" />
-                        <label>Select All</label>
+            <div class="form-group select-programs-container">
+                <!-- Select Programs -->
+                <div class="program-checkboxes-container">
+                    <label for="programCheckboxes">Select Programs:</label>
+                    <div class="program-checkboxes" id="programCheckboxes" runat="server">
+                        <div class="program-item">
+                            <asp:CheckBox ID="chkSelectAll" runat="server" CssClass="program-checkbox" 
+                                          OnClientClick="toggleSelectAll(this); return false;" 
+                                          OnCheckedChanged="chkSelectAll_CheckedChanged" AutoPostBack="true" />
+                            <label>Select All</label>
+                        </div>
+                        <asp:Repeater ID="rptPrograms" runat="server">
+                            <ItemTemplate>
+                                <div class="program-item">
+                                    <asp:CheckBox ID="chkProgram" runat="server" CssClass="program-checkbox" 
+                                                  OnClick="updateSelectAllCheckbox()" />
+                                    <label class="program-id"><%# Eval("ProgramId") %></label>
+                                </div>
+                            </ItemTemplate>
+                        </asp:Repeater>
                     </div>
-                    <asp:Repeater ID="rptPrograms" runat="server">
-                        <ItemTemplate>
-                            <div class="program-item">
-                                <asp:CheckBox ID="chkProgram" runat="server" CssClass="program-checkbox" 
-                                              OnClick="updateSelectAllCheckbox()" />
-                                <label class="program-id"><%# Eval("ProgramId") %></label>
-                            </div>
-                        </ItemTemplate>
-                    </asp:Repeater>
                 </div>
-            </div>
 
-            <!-- Include/Exclude Boxes -->
-            <div class="include-exclude-boxes">
-                <div class="include-exclude-box">
-                    <b>Include Programs</b>
-                    <asp:ListBox ID="ListBox_Program_Inc" runat="server" Multiple="true" Size="15" CssClass="program-list-box"></asp:ListBox>
+                <!-- Please Select Dropdown + Add Button -->
+                <div class="dropdown-button-group">
+                    <select>
+                        <option>Please Select</option>
+                    </select>
+                    <button type="button" class="add-btn" onclick="addToInclude()">Add>></button>
                 </div>
-                <div class="include-exclude-box">
-                    <b>Exclude Programs</b>
-                    <asp:ListBox ID="ListBox_Program_Exc" runat="server" Multiple="true" Size="15" CssClass="program-list-box"></asp:ListBox>
+
+                <!-- Include/Exclude Boxes -->
+                <div class="include-exclude-boxes">
+                    <div class="include-exclude-box">
+                        <b>Include Programs</b><br />
+                        <asp:ListBox ID="ListBox_Program_Inc" runat="server" Multiple="true" Size="10" CssClass="program-list-box"></asp:ListBox>
+                    </div>
+                    <div class="include-exclude-box">
+                        <b>Exclude Programs</b><br />
+                        <asp:ListBox ID="ListBox_Program_Exc" runat="server" Multiple="true" Size="10" CssClass="program-list-box"></asp:ListBox>
+                    </div>
                 </div>
             </div>
 
