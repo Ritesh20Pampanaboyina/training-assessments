@@ -93,6 +93,7 @@
 
         .include-exclude-box {
             margin-top: 10px;
+            margin-bottom: 10px; /* Added spacing between the two boxes */
         }
 
         /* Adjustments to the horizontal layout */
@@ -131,40 +132,26 @@
         }
 
         .include-exclude-box {
-            width: 90%; /* Adjust width to 100% of the container */
-            height: 200px; /* Increase height to make the boxes bigger vertically */
+            width: 40%; /* Reduced the width of the Include/Exclude boxes */
+            height: 150px; /* Reduced height for both Include and Exclude boxes */
             overflow-y: auto; /* Add scroll bar if content overflows */
-            margin-bottom: 10px; /* Add spacing between boxes */
+            margin-bottom: 10px; /* Added spacing between the boxes */
         }
 
         .program-list-box {
             height: 90%; /* Make the list box take most of the container height */
         }
 
-
+        /* Style for the instructions text at the bottom */
+        .instructions-text {
+            font-size: 12px;
+            color: #555;
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #ccc;
+            text-align: left;
+        }
     </style>
-    <script type="text/javascript">
-        function toggleSelectAll(selectAllCheckbox) {
-            var checkboxes = document.querySelectorAll('.program-checkbox');
-            checkboxes.forEach(function (checkbox) {
-                checkbox.checked = selectAllCheckbox.checked;
-            });
-        }
-
-        function updateSelectAllCheckbox() {
-            var checkboxes = document.querySelectorAll('.program-checkbox');
-            var selectAllCheckbox = document.getElementById('<%= chkSelectAll.ClientID %>');
-            selectAllCheckbox.checked = Array.from(checkboxes).every(function (checkbox) {
-                return checkbox.checked;
-            });
-        }
-
-        window.onload = function () {
-            var selectAllCheckbox = document.getElementById('<%= chkSelectAll.ClientID %>');
-            selectAllCheckbox.checked = true;
-            toggleSelectAll(selectAllCheckbox);
-        };
-    </script>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -274,24 +261,19 @@
             </div>
 
             <div class="form-actions">
-                <asp:Button ID="btnSubmit" runat="server" Text="Submit Audit Request" CssClass="submit-btn" OnClick="btnSubmit_Click" />
+                <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="submit-btn" OnClick="btnSubmit_Click" />
                 <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="reset-btn" OnClick="btnReset_Click" />
             </div>
 
             <asp:Label ID="lblMessage" runat="server" ForeColor="Green" Visible="false"></asp:Label>
-        </div>
 
-        <p>**Green Submit button indicates Request not submitted in this 30 min slot**<br />
-           **Please Click Reset Button to reset all the fields**
-        </p>
+            <!-- Instructions Text inside the main form container -->
+            <div class="instructions-text">
+                <p><span style="color: green;">**Green Submit button indicates Request not submitted in this 30 min slot**</span></p>
+                <p><span style="color: orange;">**Orange Submit button indicates Request already submitted in this 30 min slot**</span></p>
+                <p><span style="color: red;">**Please Click Reset Button to reset all the fields**</span></p>
+            </div>
+        </div>
     </form>
 </body>
 </html>
-
-
-
-<p>
-    <span style="color: green;">**Green Submit button indicates Request not submitted in this 30 min slot**</span><br />
-    <span style="color: orange;">**Orange Submit button indicates Request already submitted in this 30 min slot**</span><br />
-    <span style="color: red;">**Please Click Reset Button to reset all the fields**</span>
-</p>
