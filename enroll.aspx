@@ -9,7 +9,7 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-
+ 
         h2 {
             background-color: #4CAF50;
             color: white;
@@ -17,27 +17,27 @@
             text-align: center;
             font-size: 20px;
         }
-
+ 
         .form-container {
             border: 1px solid #ccc;
             padding: 20px;
             margin-top: 10px;
         }
-
+ 
         .form-group {
             margin-bottom: 15px;
         }
-
+ 
         label {
             display: inline-block;
             width: 220px;
         }
-
+ 
         input[type="text"], input[type="date"], select {
             padding: 5px;
             width: 250px;
         }
-
+ 
         .add-btn, .submit-btn, .reset-btn {
             padding: 5px 10px;
             color: white;
@@ -45,88 +45,96 @@
             cursor: pointer;
             margin-left: 10px;
         }
-
+ 
         .add-btn {
             background-color: #4CAF50;
             font-size: 14px;
             padding: 5px 10px;
         }
-
+ 
         .submit-btn {
             background-color: #28a745;
         }
-
+ 
         .reset-btn {
             background-color: #007bff;
         }
-
+ 
         .form-actions {
             margin-top: 20px;
             text-align: right;
         }
-
+ 
         .program-checkboxes {
             border: 1px solid #ccc;
-            padding: 10px;
-            max-height: 250px;
-            width: 200px;
+            padding: 5px;
+            height: 200px;
+            width: 180px; /* Slightly reduced width */
             overflow-y: scroll;
             margin-top: 5px;
         }
-
+ 
         .program-item {
             display: flex;
             align-items: center;
             margin-bottom: 5px;
         }
-
+ 
         .program-checkbox {
             margin-right: 10px;
             width: 15px;
             height: 15px;
             accent-color: blue;
         }
-
+ 
         .program-id {
             flex-grow: 1;
         }
-
-        /* Flexbox for horizontal layout */
-        .program-selection-container {
+ 
+        .include-exclude-box {
+            margin-top: 10px;
+        }
+ 
+        /* Adjustments to the horizontal layout */
+        .select-programs-container {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            align-items: flex-start; /* Center align vertically */
+            justify-content: flex-start;
+            width: 100%;
             margin-bottom: 15px;
         }
-
+ 
+        /* Select Programs Section */
         .program-checkboxes-container {
-            flex: 1;
             display: flex;
-            flex-direction: column;
-            width: 250px;
+            flex-direction: row;
+            justify-content: flex-start;
+            width: 35%; /* 25% width for Select Programs container */
+            margin-right: 15px; /* Space between Select Programs and next elements */
         }
-
+ 
+        /* Dropdown + Add Button Section */
         .dropdown-button-group {
             display: flex;
-            flex-direction: column;
+            flex-direction: row; /* Align the dropdown and button vertically */
             justify-content: center;
             align-items: flex-start;
-            margin-left: 15px;
-            width: 200px;
+            margin-right: 20px;
         }
-
+ 
         .include-exclude-boxes {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            width: 100%;
-            margin-top: 10px;
+            align-items: flex-start; /* Center align vertically */
+            width: 40%; /* Keep this as is or adjust to fit your layout */
+            flex-direction: row; /* Change from row to column to stack them vertically */
         }
-
+ 
         .include-exclude-box {
-            width: 48%;
-            height: 200px;
-            overflow-y: auto;
+            width: 90%; /* Adjust width to 100% of the container */
+            height: 200px; /* Increase height to make the boxes bigger vertically */
+            overflow-y: auto; /* Add scroll bar if content overflows */
+            margin-bottom: 10px; /* Add spacing between boxes */
         }
 
         .instructions-text {
@@ -202,67 +210,73 @@
                 <asp:TextBox ID="txtEndDate" runat="server" TextMode="Date"></asp:TextBox>
             </div>
 
-            <!-- Select Programs Section - Adjusted layout -->
-            <div class="program-selection-container">
-                <!-- Select Programs -->
-                <div class="program-checkboxes-container">
-                    <label for="programCheckboxes">Select Programs:</label>
-                    <div class="program-checkboxes" id="programCheckboxes" runat="server">
-                        <div class="program-item">
-                            <asp:CheckBox ID="chkSelectAll" runat="server" CssClass="program-checkbox" 
-                                          OnClientClick="toggleSelectAll(this); return false;" 
-                                          OnCheckedChanged="chkSelectAll_CheckedChanged" AutoPostBack="true" />
-                            <label>Select All</label>
-                        </div>
-                        <asp:Repeater ID="rptPrograms" runat="server">
-                            <ItemTemplate>
-                                <div class="program-item">
-                                    <asp:CheckBox ID="chkProgram" runat="server" CssClass="program-checkbox" 
-                                                  OnClick="updateSelectAllCheckbox()" />
-                                    <label class="program-id"><%# Eval("ProgramId") %></label>
-                                </div>
-                            </ItemTemplate>
-                        </asp:Repeater>
+            <div class="form-group">
+    <label for="programCheckboxes">Select Programs:</label>
+    <div class="program-selection-container">
+        <!-- Select Programs -->
+        <div class="program-checkboxes-container">
+            <div class="program-checkboxes" id="programCheckboxes" runat="server">
+                <div class="program-item">
+                    <asp:CheckBox ID="chkSelectAll" runat="server" CssClass="program-checkbox" 
+                                  OnClientClick="toggleSelectAll(this); return false;" 
+                                  OnCheckedChanged="chkSelectAll_CheckedChanged" AutoPostBack="true" />
+                    <label>Select All</label>
+                </div>
+                <asp:Repeater ID="rptPrograms" runat="server">
+                <ItemTemplate>
+                    <div class="program-item">
+                        <asp:CheckBox ID="chkProgram" runat="server" CssClass="program-checkbox" OnClick="updateSelectAllCheckbox()" />
+                        <label class="program-id"><%# Eval("ProgramId") %></label>
+                        <!-- Make sure the ProgramId is displayed or stored properly -->
+                        <asp:Label ID="lblProgramId" runat="server" Text='<%# Eval("ProgramId") %>' Visible="false"></asp:Label>
                     </div>
-                </div>
-
-                <!-- Dropdown + Add Button -->
-                <div class="dropdown-button-group">
-                    <select id="ddlIncludeExclude">
-                        <option value="" disabled selected>Please select</option>
-                        <option value="Include">Include</option>
-                        <option value="Exclude">Exclude</option>
-                    </select>
-                    <button type="button" class="add-btn" onclick="addToIncludeExclude()">Add>></button>
-                </div>
+                </ItemTemplate>
+                </asp:Repeater>
             </div>
+        </div>
+
+        <!-- Dropdown + Add Button (Now aligned next to the Select Programs) -->
+        <div class="dropdown-button-group">
+            <select id="ddlIncludeExclude">
+                <option value="" disabled selected>Please select</option>
+                <option value="Include">Include</option>
+                <option value="Exclude">Exclude</option>
+            </select>
+            <button type="button" class="add-btn" onclick="addToIncludeExclude()">Add>></button>
+        </div>
+    </div>
+</div>
+
 
             <!-- Include/Exclude Boxes -->
             <div class="include-exclude-boxes">
                 <div class="include-exclude-box">
                     <b>Include Programs</b><br />
                     <asp:ListBox ID="ListBox_Program_Inc" runat="server" Multiple="true" Size="10"></asp:ListBox>
+                    <a href="#" onclick="removeSelected('includeList')">Remove</a>
                 </div>
                 <div class="include-exclude-box">
                     <b>Exclude Programs</b><br />
                     <asp:ListBox ID="ListBox_Program_Exc" runat="server" Multiple="true" Size="10"></asp:ListBox>
+                    <a href="#" onclick="removeSelected('excludeList')">Remove</a>
                 </div>
             </div>
 
+            <asp:Label ID="lblMessage" runat="server" ForeColor="Red" Visible="false"></asp:Label>
+
+
             <div class="form-actions">
-                <asp:Button ID="btnSubmit" runat="server" Text="Submit" CssClass="submit-btn" OnClick="btnSubmit_Click" />
-                <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="reset-btn" OnClick="btnReset_Click" />
+                <button class="submit-btn" type="submit" id="btnSubmit">Submit</button>
+                <button class="reset-btn" type="reset" id="btnReset">Reset</button>
             </div>
+        </div>
 
-            <asp:Label ID="lblMessage" runat="server" ForeColor="Green" Visible="false"></asp:Label>
-
-            <!-- Instructions Text -->
+        <!-- Instructions Text -->
             <div class="instructions-text">
                 <p><span style="color: green;">**Green Submit button indicates Request not submitted in this 30 min slot**</span></p>
                 <p><span style="color: orange;">**Orange Submit button indicates Request already submitted in this 30 min slot**</span></p>
                 <p><span style="color: red;">**Please Click Reset Button to reset all the fields**</span></p>
             </div>
-        </div>
     </form>
 
     <script type="text/javascript">
@@ -270,94 +284,77 @@
             var dropdown = document.getElementById("ddlIncludeExclude");
             var selectedOption = dropdown.options[dropdown.selectedIndex].value;
 
-            // Get the selected programs
-            var selectedPrograms = [];
-            var checkboxes = document.querySelectorAll(".program-checkbox:checked");
-
-            checkboxes.forEach(function (checkbox) {
-                selectedPrograms.push(checkbox.parentNode.querySelector(".program-id").innerText);
-            });
-
-            if (selectedPrograms.length === 0) {
+            var checkboxes = document.querySelectorAll('.program-checkbox:checked');
+            if (checkboxes.length === 0) {
                 alert("Please select at least one program to add.");
                 return;
             }
 
-            // Move selected programs to the appropriate list based on dropdown selection
-            var listBox = (selectedOption === "Include") ? document.getElementById("<%= ListBox_Program_Inc.ClientID %>") : document.getElementById("<%= ListBox_Program_Exc.ClientID %>");
+            var selectedPrograms = [];
+            checkboxes.forEach(function (checkbox) {
+                var programId = checkbox.parentNode.querySelector(".program-id").innerText.trim();
+                selectedPrograms.push(programId);
+            });
 
-            selectedPrograms.forEach(function(program) {
+            if (!selectedOption) {
+                alert("Please select whether to Include or Exclude before adding programs.");
+                return;
+            }
+
+            var listBox;
+            if (selectedOption === "Include") {
+                listBox = document.getElementById("<%= ListBox_Program_Inc.ClientID %>");
+    } else if (selectedOption === "Exclude") {
+                listBox = document.getElementById("<%= ListBox_Program_Exc.ClientID %>");
+            }
+
+            selectedPrograms.forEach(function (program) {
                 var option = document.createElement("option");
                 option.text = program;
                 listBox.add(option);
             });
 
-            // Optionally, deselect the checkboxes after adding
-            checkboxes.forEach(function(checkbox) {
+            checkboxes.forEach(function (checkbox) {
                 checkbox.checked = false;
             });
         }
 
-        function toggleSelectAll(checkbox) {
-            var isChecked = checkbox.checked;
-            var allCheckboxes = document.querySelectorAll(".program-checkbox");
 
-            allCheckboxes.forEach(function(chk) {
-                chk.checked = isChecked;
+
+
+        // Handle the Select All checkbox
+        function updateSelectAllCheckbox() {
+            var allCheckboxes = document.querySelectorAll('.program-checkbox');
+            var selectAllCheckbox = document.getElementById('chkSelectAll');
+            var checkedCount = 0;
+
+            allCheckboxes.forEach(function(checkbox) {
+                if (checkbox.checked) {
+                    checkedCount++;
+                }
+            });
+
+            selectAllCheckbox.checked = (checkedCount === allCheckboxes.length);
+        }
+
+        // Handle the Select All behavior
+        function toggleSelectAll(selectAllCheckbox) {
+            var allCheckboxes = document.querySelectorAll('.program-checkbox');
+            allCheckboxes.forEach(function(checkbox) {
+                checkbox.checked = selectAllCheckbox.checked;
             });
         }
 
-        function updateSelectAllCheckbox() {
-            var allCheckboxes = document.querySelectorAll(".program-checkbox");
-            var selectAllCheckbox = document.getElementById("<%= chkSelectAll.ClientID %>");
+        // Remove selected options from ListBoxes
+        function removeSelected(listType) {
+            var listBox = document.getElementById(listType === 'includeList' ? "<%= ListBox_Program_Inc.ClientID %>" : "<%= ListBox_Program_Exc.ClientID %>");
+            var selectedOptions = Array.from(listBox.selectedOptions);
 
-            var allChecked = Array.from(allCheckboxes).every(function (chk) {
-                return chk.checked;
+            selectedOptions.forEach(function (option) {
+                listBox.removeChild(option);
             });
-
-            selectAllCheckbox.checked = allChecked;
         }
     </script>
 </body>
 </html>
 
-
-
-<div class="program-selection">
-    <!-- Left Section: Program Checkboxes -->
-    <div class="checkbox-container">
-        <label for="programs" class="section-title">Program Name:</label>
-        <input type="checkbox" id="selectAllPrograms" onclick="toggleAllPrograms()"> All Programs
-        <div id="programCheckboxes">
-            <!-- Individual Program Checkboxes (loaded dynamically or hardcoded) -->
-            <input type="checkbox" name="programs" value="Program1"> Program1<br>
-            <input type="checkbox" name="programs" value="Program2"> Program2<br>
-            <input type="checkbox" name="programs" value="Program3"> Program3<br>
-            <!-- Add more program checkboxes as needed -->
-        </div>
-    </div>
-
-    <!-- Center Section: Dropdown and Add Button -->
-    <div class="center-section">
-        <select id="actionDropdown">
-            <option value="">Please select</option>
-            <option value="Include">Include</option>
-            <option value="Exclude">Exclude</option>
-        </select>
-        <button onclick="addSelectedPrograms()">Add &gt;&gt;</button>
-    </div>
-
-    <!-- Right Section: Include and Exclude Lists -->
-    <div class="include-exclude-container">
-        <div class="include-box">
-            <label class="section-title">Include</label>
-            <select id="includeList" size="10" multiple></select>
-            <a href="#" onclick="removeSelected('includeList')">Remove</a>
-        </div>
-        <div class="exclude-box">
-            <label class="section-title">Exclude</label>
-            <select id="excludeList" size="10" multiple></select>
-            <a href="#" onclick="removeSelected('excludeList')">Remove</a>
-        </div>
-    </div>
-</div>
