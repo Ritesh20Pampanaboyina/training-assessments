@@ -67,9 +67,9 @@
 
         .program-checkboxes {
             border: 1px solid #ccc;
-            padding: 5px;
-            height: 200px;
-            width: 180px; /* Slightly reduced width */
+            padding: 10px;
+            max-height: 250px;
+            width: 200px;
             overflow-y: scroll;
             margin-top: 5px;
         }
@@ -91,61 +91,44 @@
             flex-grow: 1;
         }
 
-        .include-exclude-box {
-            margin-top: 10px;
-            margin-bottom: 10px; /* Added spacing between the two boxes */
-        }
-
-        /* Adjustments to the horizontal layout */
-        .select-programs-container {
+        /* Flexbox for horizontal layout */
+        .program-selection-container {
             display: flex;
-            align-items: flex-start; /* Center align vertically */
-            justify-content: flex-start;
-            width: 100%;
+            justify-content: space-between;
+            align-items: flex-start;
             margin-bottom: 15px;
         }
 
-        /* Select Programs Section */
         .program-checkboxes-container {
+            flex: 1;
             display: flex;
-            flex-direction: row;
-            justify-content: flex-start;
-            width: 35%; /* 25% width for Select Programs container */
-            margin-right: 15px; /* Space between Select Programs and next elements */
+            flex-direction: column;
+            width: 250px;
         }
 
-        /* Dropdown + Add Button Section */
         .dropdown-button-group {
             display: flex;
-            flex-direction: row; /* Align the dropdown and button vertically */
+            flex-direction: column;
             justify-content: center;
             align-items: flex-start;
-            margin-right: 20px;
+            margin-left: 15px;
+            width: 200px;
         }
 
         .include-exclude-boxes {
             display: flex;
-            justify-content: flex-start;
-            align-items: flex-start; /* Center align vertically */
-            width: 40%; /* Keep this as is or adjust to fit your layout */
-            flex-direction: row; /* Change from row to column to stack them vertically */
-            margin-right: 15px;
-
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            margin-top: 10px;
         }
 
         .include-exclude-box {
-            width: 40%; /* Reduced the width of the Include/Exclude boxes */
-            height: 150px; /* Reduced height for both Include and Exclude boxes */
-            overflow-y: auto; /* Add scroll bar if content overflows */
-            margin-bottom: 10px; /* Added spacing between the boxes */
-            margin-right: 20px;
+            width: 48%;
+            height: 200px;
+            overflow-y: auto;
         }
 
-        .program-list-box {
-            height: 90%; /* Make the list box take most of the container height */
-        }
-
-        /* Style for the instructions text at the bottom */
         .instructions-text {
             font-size: 12px;
             color: #555;
@@ -154,8 +137,8 @@
             border-top: 1px solid #ccc;
             text-align: left;
         }
-    </style>
 
+    </style>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -219,8 +202,8 @@
                 <asp:TextBox ID="txtEndDate" runat="server" TextMode="Date"></asp:TextBox>
             </div>
 
-            <!-- Select Programs Section -->
-            <div class="form-group select-programs-container">
+            <!-- Select Programs Section - Adjusted layout -->
+            <div class="program-selection-container">
                 <!-- Select Programs -->
                 <div class="program-checkboxes-container">
                     <label for="programCheckboxes">Select Programs:</label>
@@ -243,26 +226,26 @@
                     </div>
                 </div>
 
-                <!-- Please Select Dropdown + Add Button -->
+                <!-- Dropdown + Add Button -->
                 <div class="dropdown-button-group">
-                    <label for="ddlIncludeExclude">Please Select:</label>
                     <select id="ddlIncludeExclude">
+                        <option value="" disabled selected>Please select</option>
                         <option value="Include">Include</option>
                         <option value="Exclude">Exclude</option>
                     </select>
                     <button type="button" class="add-btn" onclick="addToIncludeExclude()">Add>></button>
                 </div>
+            </div>
 
-                <!-- Include/Exclude Boxes -->
-                <div class="include-exclude-boxes">
-                    <div class="include-exclude-box">
-                        <b>Include Programs</b><br />
-                        <asp:ListBox ID="ListBox_Program_Inc" runat="server" Multiple="true" Size="10" CssClass="program-list-box"></asp:ListBox>
-                    </div>
-                    <div class="include-exclude-box">
-                        <b>Exclude Programs</b><br />
-                        <asp:ListBox ID="ListBox_Program_Exc" runat="server" Multiple="true" Size="10" CssClass="program-list-box"></asp:ListBox>
-                    </div>
+            <!-- Include/Exclude Boxes -->
+            <div class="include-exclude-boxes">
+                <div class="include-exclude-box">
+                    <b>Include Programs</b><br />
+                    <asp:ListBox ID="ListBox_Program_Inc" runat="server" Multiple="true" Size="10"></asp:ListBox>
+                </div>
+                <div class="include-exclude-box">
+                    <b>Exclude Programs</b><br />
+                    <asp:ListBox ID="ListBox_Program_Exc" runat="server" Multiple="true" Size="10"></asp:ListBox>
                 </div>
             </div>
 
@@ -273,7 +256,7 @@
 
             <asp:Label ID="lblMessage" runat="server" ForeColor="Green" Visible="false"></asp:Label>
 
-            <!-- Instructions Text inside the main form container -->
+            <!-- Instructions Text -->
             <div class="instructions-text">
                 <p><span style="color: green;">**Green Submit button indicates Request not submitted in this 30 min slot**</span></p>
                 <p><span style="color: orange;">**Orange Submit button indicates Request already submitted in this 30 min slot**</span></p>
@@ -281,6 +264,7 @@
             </div>
         </div>
     </form>
+
     <script type="text/javascript">
         function addToIncludeExclude() {
             var dropdown = document.getElementById("ddlIncludeExclude");
