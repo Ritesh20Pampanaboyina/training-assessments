@@ -278,3 +278,36 @@
     </form>
 </body>
 </html>
+
+
+.select-programs-container {
+    display: flex;
+    align-items: flex-start; /* Align items to the top */
+    justify-content: flex-start;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.program-checkboxes-container {
+    width: 30%; /* Increase width for better alignment */
+    margin-right: 15px;
+}
+
+.dropdown-button-group {
+    display: flex;
+    flex-direction: column; /* Align dropdown and button vertically */
+    justify-content: center; /* Center within the column */
+    margin-right: 20px;
+    height: 100%; /* Fill available space vertically */
+}
+
+.include-exclude-boxes {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Align items to the top */
+    width: 40%; /* Adjust width */
+}
+
+.include-exclude-box {
+    width: 48%; /* Adjusting size of Include/Exclude boxes */
+}
