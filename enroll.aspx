@@ -69,7 +69,7 @@
             border: 1px solid #ccc;
             padding: 5px;
             height: 200px;
-            width: 180px; /* Slightly reduced width */
+            width: 180px;
             overflow-y: scroll;
             margin-top: 5px;
         }
@@ -91,55 +91,25 @@
             flex-grow: 1;
         }
 
-        .include-exclude-box {
-            margin-top: 10px;
-            margin-bottom: 10px; /* Added spacing between the two boxes */
-        }
-
-        /* Adjustments to the horizontal layout */
-        .select-programs-container {
-            display: flex;
-            align-items: flex-start; /* Center align vertically */
-            justify-content: flex-start;
-            width: 100%;
-            margin-bottom: 15px;
-        }
-
-        /* Select Programs Section */
-        .program-checkboxes-container {
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-start;
-            width: 35%; /* 25% width for Select Programs container */
-            margin-right: 15px; /* Space between Select Programs and next elements */
-        }
-
-        /* Dropdown + Add Button Section */
-        .dropdown-button-group {
-            display: flex;
-            flex-direction: row; /* Align the dropdown and button vertically */
-            justify-content: center;
-            align-items: flex-start;
-            margin-right: 20px;
-        }
-
         .include-exclude-boxes {
             display: flex;
+            flex-direction: row;
             justify-content: space-between;
-            align-items: flex-start; /* Center align vertically */
-            width: 40%; /* Keep this as is or adjust to fit your layout */
-            flex-direction: row; /* Change from row to column to stack them vertically */
+            width: 100%;
         }
 
         .include-exclude-box {
-            width: 40%; /* Reduced the width of the Include/Exclude boxes */
-            height: 150px; /* Reduced height for both Include and Exclude boxes */
-            overflow-y: auto; /* Add scroll bar if content overflows */
-            margin-bottom: 10px; /* Added spacing between the boxes */
+            width: 48%;
+            height: 250px;
+            overflow-y: auto;
+            padding: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
         }
 
-        .program-list-box {
-            height: 90%; /* Make the list box take most of the container height */
+        .include-exclude-box b {
+            display: block;
+            margin-bottom: 5px;
         }
 
         /* Style for the instructions text at the bottom */
@@ -216,47 +186,36 @@
             </div>
 
             <!-- Select Programs Section -->
-            <div class="form-group select-programs-container">
-                <!-- Select Programs -->
-                <div class="program-checkboxes-container">
-                    <label for="programCheckboxes">Select Programs:</label>
-                    <div class="program-checkboxes" id="programCheckboxes" runat="server">
-                        <div class="program-item">
-                            <asp:CheckBox ID="chkSelectAll" runat="server" CssClass="program-checkbox" 
-                                          OnClientClick="toggleSelectAll(this); return false;" 
-                                          OnCheckedChanged="chkSelectAll_CheckedChanged" AutoPostBack="true" />
-                            <label>Select All</label>
-                        </div>
-                        <asp:Repeater ID="rptPrograms" runat="server">
-                            <ItemTemplate>
-                                <div class="program-item">
-                                    <asp:CheckBox ID="chkProgram" runat="server" CssClass="program-checkbox" 
-                                                  OnClick="updateSelectAllCheckbox()" />
-                                    <label class="program-id"><%# Eval("ProgramId") %></label>
-                                </div>
-                            </ItemTemplate>
-                        </asp:Repeater>
+            <div class="form-group">
+                <label for="programCheckboxes">Select Programs:</label>
+                <div class="program-checkboxes" id="programCheckboxes" runat="server">
+                    <div class="program-item">
+                        <asp:CheckBox ID="chkSelectAll" runat="server" CssClass="program-checkbox" 
+                                      OnClientClick="toggleSelectAll(this); return false;" 
+                                      OnCheckedChanged="chkSelectAll_CheckedChanged" AutoPostBack="true" />
+                        <label>Select All</label>
                     </div>
+                    <asp:Repeater ID="rptPrograms" runat="server">
+                        <ItemTemplate>
+                            <div class="program-item">
+                                <asp:CheckBox ID="chkProgram" runat="server" CssClass="program-checkbox" 
+                                              OnClick="updateSelectAllCheckbox()" />
+                                <label class="program-id"><%# Eval("ProgramId") %></label>
+                            </div>
+                        </ItemTemplate>
+                    </asp:Repeater>
                 </div>
+            </div>
 
-                <!-- Please Select Dropdown + Add Button -->
-                <div class="dropdown-button-group">
-                    <select>
-                        <option>Please Select</option>
-                    </select>
-                    <button type="button" class="add-btn" onclick="addToInclude()">Add>></button>
+            <!-- Include/Exclude Boxes -->
+            <div class="include-exclude-boxes">
+                <div class="include-exclude-box">
+                    <b>Include Programs</b>
+                    <asp:ListBox ID="ListBox_Program_Inc" runat="server" Multiple="true" Size="15" CssClass="program-list-box"></asp:ListBox>
                 </div>
-
-                <!-- Include/Exclude Boxes -->
-                <div class="include-exclude-boxes">
-                    <div class="include-exclude-box">
-                        <b>Include Programs</b><br />
-                        <asp:ListBox ID="ListBox_Program_Inc" runat="server" Multiple="true" Size="10" CssClass="program-list-box"></asp:ListBox>
-                    </div>
-                    <div class="include-exclude-box">
-                        <b>Exclude Programs</b><br />
-                        <asp:ListBox ID="ListBox_Program_Exc" runat="server" Multiple="true" Size="10" CssClass="program-list-box"></asp:ListBox>
-                    </div>
+                <div class="include-exclude-box">
+                    <b>Exclude Programs</b>
+                    <asp:ListBox ID="ListBox_Program_Exc" runat="server" Multiple="true" Size="15" CssClass="program-list-box"></asp:ListBox>
                 </div>
             </div>
 
