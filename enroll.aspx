@@ -5,159 +5,156 @@
 <head runat="server">
     <title>Percentage Enrollment UI</title>
     <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
 
-    h2 {
-        background-color: #4CAF50;
-        color: white;
-        padding: 10px;
-        text-align: center;
-        font-size: 20px;
-    }
+        h2 {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 20px;
+        }
 
-    .form-container {
-        border: 1px solid #ccc;
-        padding: 20px;
-        margin-top: 10px;
-    }
+        .form-container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-top: 10px;
+        }
 
-    .form-group {
-        margin-bottom: 15px;
-    }
+        .form-group {
+            margin-bottom: 15px;
+        }
 
-    label {
-        display: inline-block;
-        width: 220px;
-    }
+        label {
+            display: inline-block;
+            width: 220px;
+        }
 
-    input[type="text"], input[type="date"], select {
-        padding: 5px;
-        width: 250px;
-    }
+        input[type="text"], input[type="date"], select {
+            padding: 5px;
+            width: 250px;
+        }
 
-    .add-btn, .submit-btn, .reset-btn {
-        padding: 5px 10px;
-        color: white;
-        border: none;
-        cursor: pointer;
-        margin-left: 10px;
-    }
+        .add-btn, .submit-btn, .reset-btn {
+            padding: 5px 10px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px;
+        }
 
-    .add-btn {
-        background-color: #4CAF50;
-        font-size: 14px;
-        padding: 5px 10px;
-    }
+        .add-btn {
+            background-color: #4CAF50;
+            font-size: 14px;
+            padding: 5px 10px;
+        }
 
-    .submit-btn {
-        background-color: #28a745;
-    }
+        .submit-btn {
+            background-color: #28a745;
+        }
 
-    .reset-btn {
-        background-color: #007bff;
-    }
+        .reset-btn {
+            background-color: #007bff;
+        }
 
-    .form-actions {
-        margin-top: 20px;
-        text-align: right;
-    }
+        .form-actions {
+            margin-top: 20px;
+            text-align: right;
+        }
 
-    .program-checkboxes {
-        border: 1px solid #ccc;
-        padding: 5px;
-        height: 200px;
-        width: 180px; /* Same width as the "Include/Exclude" boxes */
-        overflow-y: auto;
-        margin-top: 5px;
-    }
+        .program-checkboxes {
+            border: 1px solid #ccc;
+            padding: 5px;
+            height: 200px;
+            width: 180px; /* Slightly reduced width */
+            overflow-y: scroll;
+            margin-top: 5px;
+        }
 
-    .program-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 5px;
-    }
+        .program-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
 
-    .program-checkbox {
-        margin-right: 10px;
-        width: 15px;
-        height: 15px;
-        accent-color: blue;
-    }
+        .program-checkbox {
+            margin-right: 10px;
+            width: 15px;
+            height: 15px;
+            accent-color: blue;
+        }
 
-    .program-id {
-        flex-grow: 1;
-    }
+        .program-id {
+            flex-grow: 1;
+        }
 
-    .include-exclude-box {
-        margin-top: 10px;
-        margin-bottom: 10px;
-        overflow-y: hidden; /* Remove scrolling */
-        padding: 5px;
-        display: flex;
-        align-items: flex-start;
-        justify-content: flex-start;
-        height: 150px; /* Adjusted box height */
-        width: 150px; /* Adjusted box width */
-        background-color: #f9f9f9; /* Light background for visibility */
-    }
+        .include-exclude-box {
+            margin-top: 10px;
+            margin-bottom: 10px; /* Added spacing between the two boxes */
+        }
 
-    /* Adjustments to the horizontal layout */
-    .select-programs-container {
-        display: flex;
-        align-items: flex-start; /* Center align vertically */
-        justify-content: flex-start;
-        width: 100%;
-        margin-bottom: 15px;
-    }
+        /* Adjustments to the horizontal layout */
+        .select-programs-container {
+            display: flex;
+            align-items: flex-start; /* Center align vertically */
+            justify-content: flex-start;
+            width: 100%;
+            margin-bottom: 15px;
+        }
 
-    /* Select Programs Section */
-    .program-checkboxes-container {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-start;
-        width: 35%; /* 35% width for Select Programs container */
-        margin-right: 15px; /* Space between Select Programs and next elements */
-    }
+        /* Select Programs Section */
+        .program-checkboxes-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            width: 35%; /* 25% width for Select Programs container */
+            margin-right: 15px; /* Space between Select Programs and next elements */
+        }
 
-    /* Include & Exclude Boxes Section (Aligned Side by Side with minimal gap) */
-    .include-exclude-boxes {
-        display: flex;
-        justify-content: flex-start; /* Align boxes side by side */
-        align-items: flex-start; /* Align items to the top */
-        width: 60%; /* Ensure both boxes fit together in the remaining space */
-    }
+        /* Dropdown + Add Button Section */
+        .dropdown-button-group {
+            display: flex;
+            flex-direction: row; /* Align the dropdown and button vertically */
+            justify-content: center;
+            align-items: flex-start;
+            margin-right: 20px;
+        }
 
-    .include-exclude-box {
-        width: 150px; /* Same width for both boxes */
-        height: 150px; /* Adjusted height for both boxes */
-        margin-right: 5px; /* Small gap between the boxes */
-        overflow-y: hidden; /* Remove scroll */
-        background-color: #f9f9f9; /* Light background for visibility */
-    }
+        .include-exclude-boxes {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start; /* Center align vertically */
+            width: 40%; /* Keep this as is or adjust to fit your layout */
+            flex-direction: row; /* Change from row to column to stack them vertically */
+            margin-right: 15px;
 
-    /* Ensure no margin for the last box */
-    .include-exclude-box:last-child {
-        margin-right: 0;
-    }
+        }
 
-    .program-list-box {
-        height: 90%; /* Make the list box take most of the container height */
-    }
+        .include-exclude-box {
+            width: 40%; /* Reduced the width of the Include/Exclude boxes */
+            height: 150px; /* Reduced height for both Include and Exclude boxes */
+            overflow-y: auto; /* Add scroll bar if content overflows */
+            margin-bottom: 10px; /* Added spacing between the boxes */
+            margin-right: 20px;
+        }
 
-    /* Style for the instructions text at the bottom */
-    .instructions-text {
-        font-size: 12px;
-        color: #555;
-        margin-top: 20px;
-        padding-top: 10px;
-        border-top: 1px solid #ccc;
-        text-align: left;
-    }
-</style>
+        .program-list-box {
+            height: 90%; /* Make the list box take most of the container height */
+        }
 
+        /* Style for the instructions text at the bottom */
+        .instructions-text {
+            font-size: 12px;
+            color: #555;
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #ccc;
+            text-align: left;
+        }
+    </style>
 
 </head>
 <body>
