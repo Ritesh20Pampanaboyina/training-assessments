@@ -287,3 +287,11 @@
     </form>
 </body>
 </html>
+
+
+
+<p>
+    <span style="color: green;">**Green Submit button indicates Request not submitted in this 30 min slot**</span><br />
+    <span style="color: orange;">**Orange Submit button indicates Request already submitted in this 30 min slot**</span><br />
+    <span style="color: red;">**Please Click Reset Button to reset all the fields**</span>
+</p>
