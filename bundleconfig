@@ -1,38 +1,96 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Optimization;
-using System.Web.UI;
+USE [CustomDB]
+GO
+/****** Object:  StoredProcedure [dbo].[SHPp_Percentage_Enrollment_Audit_Adhoc_Update]    Script Date: 11/8/2024 11:44:05 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE OR ALTER PROCEDURE [dbo].[SHPp_Percentage_Enrollment_Audit_Adhoc_Update]
+ @AuditFileType1 VARCHAR(50),
+ --@AuditFileType2 VARCHAR(50),
+ --@ChooseEnrollmentSpecialist VARCHAR(MAX),
+ @ChooseDSU VARCHAR(MAX),
+ @SelectGroups VARCHAR(MAX),
+ @Adds_Terms VARCHAR(MAX),
+ @Percent_Member_Account_Changes VARCHAR(MAX),
+ @start_date DATETIME,
+ @end_date DATETIME,
+ --@SelectPrograms VARCHAR(MAX)
+ @progids_Included VARCHAR(MAX),
+ @Progids_Excluded VARCHAR(MAX),
+ @Enrollment_Specialist_Included VARCHAR(MAX),
+ @Enrollment_Specialist_Excluded VARCHAR(MAX)
+AS
+BEGIN
+	SET XACT_ABORT ON;
+	SET NOCOUNT ON;
 
-namespace CotivitiApp
-{
-    public class BundleConfig
-    {
-        // For more information on Bundling, visit https://go.microsoft.com/fwlink/?LinkID=303951
-        public static void RegisterBundles(BundleCollection bundles)
-        {
-            bundles.Add(new ScriptBundle("~/bundles/WebFormsJs").Include(
-                            "~/Scripts/WebForms/WebForms.js",
-                            "~/Scripts/WebForms/WebUIValidation.js",
-                            "~/Scripts/WebForms/MenuStandards.js",
-                            "~/Scripts/WebForms/Focus.js",
-                            "~/Scripts/WebForms/GridView.js",
-                            "~/Scripts/WebForms/DetailsView.js",
-                            "~/Scripts/WebForms/TreeView.js",
-                            "~/Scripts/WebForms/WebParts.js"));
+	DECLARE	@spName		varchar(100)
+			
+	-- Add declare variables
 
-            // Order is very important for these files to work, they have explicit dependencies
-            bundles.Add(new ScriptBundle("~/bundles/MsAjaxJs").Include(
-                    "~/Scripts/WebForms/MsAjax/MicrosoftAjax.js",
-                    "~/Scripts/WebForms/MsAjax/MicrosoftAjaxApplicationServices.js",
-                    "~/Scripts/WebForms/MsAjax/MicrosoftAjaxTimer.js",
-                    "~/Scripts/WebForms/MsAjax/MicrosoftAjaxWebForms.js"));
+	SELECT @spName = OBJECT_SCHEMA_NAME(@@procid) + '.' + OBJECT_NAME(@@procid)
 
-            // Use the Development version of Modernizr to develop with and learn from. Then, when you’re
-            // ready for production, use the build tool at https://modernizr.com to pick only the tests you need
-            bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
-                            "~/Scripts/modernizr-*"));
-        }
-    }
-}
+		BEGIN Try
+			IF EXISTS(SELECT 1 FROM SHPt_Interface_Adhoc_Param WHERE InterfaceId = 'INT00000240')
+			BEGIN 
+			    UPDATE SHPt_Interface_Adhoc_Param SET lookupvalue = @AuditFileType1 WHERE InterfaceId = 'INT00000240' AND lookupname = 'AuditFileType1'
+				--UPDATE SHPt_Interface_Adhoc_Param SET lookupvalue = @AuditFileType2 WHERE InterfaceId = 'INT00000240' AND lookupname = 'AuditFileType2'
+				--UPDATE SHPt_Interface_Adhoc_Param SET lookupvalue = @ChooseEnrollmentSpecialist WHERE InterfaceId = 'INT00000240' AND lookupname = 'Choose Enrollment Specialist'
+				UPDATE SHPt_Interface_Adhoc_Param SET lookupvalue = @ChooseDSU WHERE InterfaceId = 'INT00000240' AND lookupname = 'Choose DSU'
+				UPDATE SHPt_Interface_Adhoc_Param SET lookupvalue = @SelectGroups WHERE InterfaceId = 'INT00000240' AND lookupname = 'Select Groups'
+				UPDATE SHPt_Interface_Adhoc_Param SET lookupvalue = @Adds_Terms WHERE InterfaceId = 'INT00000240' AND lookupname = '# of Adds/Terms'
+				UPDATE SHPt_Interface_Adhoc_Param SET lookupvalue = @Percent_Member_Account_Changes WHERE InterfaceId = 'INT00000240' AND lookupname = '% of Member Account Changes'
+				UPDATE SHPt_Interface_Adhoc_Param SET lookupvalue = CONVERT(nvarchar,@start_date,23) WHERE InterfaceId = 'INT00000240' AND lookupname = 'AdhocDateFrom'
+				UPDATE SHPt_Interface_Adhoc_Param SET lookupvalue = CONVERT(nvarchar,@end_date,23) WHERE InterfaceId = 'INT00000240' AND lookupname = 'AdhocDateTo'
+				--UPDATE SHPt_Interface_Adhoc_Param SET lookupvalue = @SelectPrograms WHERE InterfaceId = 'INT00000240' AND lookupname = 'Select Programs'
+			    UPDATE SHPt_Interface_Adhoc_Param SET lookupvalue = @progids_Included WHERE InterfaceId = 'INT00000240' AND lookupname = 'LOBIncluded'
+				UPDATE SHPt_Interface_Adhoc_Param SET lookupvalue = @Progids_Excluded WHERE InterfaceId = 'INT00000240' AND lookupname = 'LOBExcluded'
+				UPDATE SHPt_Interface_Adhoc_Param SET lookupvalue = @Enrollment_Specialist_Included WHERE InterfaceId = 'INT00000240' AND lookupname = 'Enrollment_Specialist_Included'
+				UPDATE SHPt_Interface_Adhoc_Param SET lookupvalue = @Enrollment_Specialist_Excluded WHERE InterfaceId = 'INT00000240' AND lookupname = 'Enrollment_Specialist_Excluded'
+
+
+
+				UPDATE [SHPt_Interface_Adhoc_Param] SET IsAdhoc='Y', lastupdate=GETDATE(), updateid=USER_NAME() WHERE InterfaceId='INT00000240'
+			END
+			ELSE
+			BEGIN
+
+			   
+				INSERT INTO SHPt_Interface_Adhoc_Param VALUES('INT00000240',1,'AdhocDateFrom',CONVERT(nvarchar,@start_date,23),'Start date','2022-01-01 00:00:00','2078-12-31 00:00:00','Y',USER_NAME(),GETDATE(),USER_NAME(),GETDATE())
+				INSERT INTO SHPt_Interface_Adhoc_Param VALUES('INT00000240',2,'AdhocDateTo',CONVERT(nvarchar,@end_date,23),'End date','2022-01-01 00:00:00','2078-12-31 00:00:00','Y',USER_NAME(),GETDATE(),USER_NAME(),GETDATE())
+				INSERT INTO SHPt_Interface_Adhoc_Param VALUES('INT00000240',3,'NumberPercentage','100%','NumberPercentage','2022-01-01 00:00:00','2078-12-31 00:00:00','Y',USER_NAME(),GETDATE(),USER_NAME(),GETDATE())
+				--INSERT INTO SHPt_Interface_Adhoc_Param VALUES('INT00000240',4,'AuditType','1','AuditType Number,holds only 1 num/blank, not multiplet','2022-01-01 00:00:00','2078-12-31 00:00:00','Y',USER_NAME(),GETDATE(),USER_NAME(),GETDATE())
+				INSERT INTO SHPt_Interface_Adhoc_Param VALUES('INT00000240',5,'ScheduledRunFromDateOverride','','enrollDate cutoff for Sch RUn(>Date)','2022-01-01 00:00:00','2078-12-31 00:00:00','Y',USER_NAME(),GETDATE(),USER_NAME(),GETDATE())
+				INSERT INTO SHPt_Interface_Adhoc_Param VALUES('INT00000240',6,'ScheduledRunToDateOverride','','EnrollDate cutoff for Sch run(<=Date)','2022-01-01 00:00:00','2078-12-31 00:00:00','Y',USER_NAME(),GETDATE(),USER_NAME(),GETDATE())
+				INSERT INTO SHPt_Interface_Adhoc_Param VALUES('INT00000240',7,'AuditFileType1',@AuditFileType1,'FileType1','2022-01-01 00:00:00','2078-12-31 00:00:00','Y',USER_NAME(),GETDATE(),USER_NAME(),GETDATE())
+				--INSERT INTO SHPt_Interface_Adhoc_Param VALUES('INT00000240',8,'AuditFileType2',@AuditFileType2,'FileType2','2022-01-01 00:00:00','2078-12-31 00:00:00','Y',USER_NAME(),GETDATE(),USER_NAME(),GETDATE())
+				--INSERT INTO SHPt_Interface_Adhoc_Param VALUES('INT00000240',9,'Choose Enrollment Specialist','All','','2022-01-01 00:00:00','2078-12-31 00:00:00','Y',USER_NAME(),GETDATE(),USER_NAME(),GETDATE())
+				INSERT INTO SHPt_Interface_Adhoc_Param VALUES('INT00000240',10,'Choose DSU','All','','2022-01-01 00:00:00','2078-12-31 00:00:00','Y',USER_NAME(),GETDATE(),USER_NAME(),GETDATE())
+				INSERT INTO SHPt_Interface_Adhoc_Param VALUES('INT00000240',11,'Select Groups','All','','2022-01-01 00:00:00','2078-12-31 00:00:00','Y',USER_NAME(),GETDATE(),USER_NAME(),GETDATE())
+				INSERT INTO SHPt_Interface_Adhoc_Param VALUES('INT00000240',12,'# of Adds/Terms',@Adds_Terms,'Focus','2022-01-01 00:00:00','2078-12-31 00:00:00','Y',USER_NAME(),GETDATE(),USER_NAME(),GETDATE())
+				INSERT INTO SHPt_Interface_Adhoc_Param VALUES('INT00000240',13,'% of Member Account Changes',@Percent_Member_Account_Changes,'Random','2022-01-01 00:00:00','2078-12-31 00:00:00','Y',USER_NAME(),GETDATE(),USER_NAME(),GETDATE())
+				INSERT INTO SHPt_Interface_Adhoc_Param VALUES('INT00000240',14,'LOBIncluded',@progids_Included,'Line of Business Included','2022-01-01 00:00:00','2078-12-31 00:00:00','Y',USER_NAME(),GETDATE(),USER_NAME(),GETDATE())
+				INSERT INTO SHPt_Interface_Adhoc_Param VALUES('INT00000240',15,'LOBExcluded',@Progids_Excluded,'Line of Business Excluded','2022-01-01 00:00:00','2078-12-31 00:00:00','Y',USER_NAME(),GETDATE(),USER_NAME(),GETDATE())
+				INSERT INTO SHPt_Interface_Adhoc_Param VALUES('INT00000240',16,'Enrollment_Specialist_Included',@Enrollment_Specialist_Included,'enrollment specialist include','2022-01-01 00:00:00','2078-12-31 00:00:00','Y',USER_NAME(),GETDATE(),USER_NAME(),GETDATE())
+				INSERT INTO SHPt_Interface_Adhoc_Param VALUES('INT00000240',17,'Enrollment_Specialist_Excluded',@Enrollment_Specialist_Excluded,'enrollment specialist exclude','2022-01-01 00:00:00','2078-12-31 00:00:00','Y',USER_NAME(),GETDATE(),USER_NAME(),GETDATE())
+
+			END
+		
+   END TRY
+
+	BEGIN CATCH
+
+		DECLARE @ErrorMessage		varchar(max)
+				, @ErrorSeverity	int
+				, @ErrorState		int
+		SELECT @ErrorMessage = @spName + ' failed. Error - ' +  ERROR_MESSAGE()
+				, @ErrorSeverity	= ERROR_SEVERITY()
+				, @ErrorState		= ERROR_STATE() 
+
+	END CATCH
+
+End
+
+--Select * from SHPt_Interface_Adhoc_run_Param where interfaceid = 'INT00000240'
+--exec SHPp_GetAdjudicators_PercentageClaim
