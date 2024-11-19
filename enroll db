@@ -9,93 +9,28 @@ namespace Percentage_Enrollment_UI
     {
         private string connectionString = ConfigurationManager.ConnectionStrings["CustomDB"].ConnectionString;
 
-        
-        public DataTable GetPrograms()
+        public bool CheckRecentSubmission()
         {
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlCommand cmd = new SqlCommand("SHPp_CheckRecentSubmission", conn))
                 {
-                    using (SqlCommand cmd = new SqlCommand("Enrollment_GetProgram", conn))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        conn.Open();
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
-                        {
-                            DataTable programs = new DataTable();
-                            adapter.Fill(programs);
-                            return programs;
-                        }
-                    }
+                    conn.Open();
+                    var result = cmd.ExecuteScalar();
+                    return result != null && Convert.ToInt32(result) > 0;
                 }
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("An error occurred while fetching programs.", ex);
+                throw new ApplicationException("An error occurred while checking submission status.", ex);
             }
         }
 
-      
-        public DataTable GetEnrollmentSpecialists()
-        {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    using (SqlCommand cmd = new SqlCommand("SHPp_GetAdjudicators_PercentageClaim", conn))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        conn.Open();
-
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
-                        {
-                            DataTable specialists = new DataTable();
-                            adapter.Fill(specialists);
-                            return specialists;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("An error occurred while fetching enrollment specialists.", ex);
-            }
-        }
-
-        public DataTable GetAdhocFlag(string intefaceid)
-        {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    using (SqlCommand cmd = new SqlCommand("SHPp_GetAdhocFlag", conn))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@InterfaceId", intefaceid);
-
-                        conn.Open();
-
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
-                        {
-                            DataTable dt_new = new DataTable();
-                            adapter.Fill(dt_new);
-                            return dt_new;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("An error occurred while fetching Adhoc Flag data.", ex);
-            }
-        }
-
-
-
-        public void SubmitAuditRequest(
+        public bool SubmitAuditRequest(
             string auditFileType1,
-            //string enrollmentSpecialist,
             string dsu,
             string groups,
             string addsTerms,
@@ -105,38 +40,37 @@ namespace Percentage_Enrollment_UI
             string includedPrograms,
             string excludedPrograms,
             string includedSpecialists,
-            string excludedSpecialists  
+            string excludedSpecialists
         )
         {
-            Console.WriteLine("Included Programs: " + includedPrograms);
-            Console.WriteLine("Excluded Programs: " + excludedPrograms);
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            try
             {
-                SqlCommand cmd = new SqlCommand("SHPp_Percentage_Enrollment_Audit_Adhoc_run_Update", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlCommand cmd = new SqlCommand("SHPp_Percentage_Enrollment_Audit_Adhoc_run_Update", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-                // Existing parameters
-                cmd.Parameters.AddWithValue("@AuditFileType1", auditFileType1);
-                //cmd.Parameters.AddWithValue("@ChooseEnrollmentSpecialist", enrollmentSpecialist);
-                cmd.Parameters.AddWithValue("@ChooseDSU", dsu);
-                cmd.Parameters.AddWithValue("@SelectGroups", groups);
-                cmd.Parameters.AddWithValue("@Adds_Terms", addsTerms);
-                cmd.Parameters.AddWithValue("@Percent_Member_Account_Changes", percentChanges);
-                cmd.Parameters.AddWithValue("@start_date", startDate);
-                cmd.Parameters.AddWithValue("@end_date", endDate);
-                cmd.Parameters.AddWithValue("@progids_Included", includedPrograms);
-                cmd.Parameters.AddWithValue("@progids_Excluded", excludedPrograms);
-                cmd.Parameters.AddWithValue("@Enrollment_Specialist_Included", includedSpecialists);
-                cmd.Parameters.AddWithValue("@Enrollment_Specialist_Excluded", excludedSpecialists);
+                    cmd.Parameters.AddWithValue("@AuditFileType1", auditFileType1);
+                    cmd.Parameters.AddWithValue("@ChooseDSU", dsu);
+                    cmd.Parameters.AddWithValue("@SelectGroups", groups);
+                    cmd.Parameters.AddWithValue("@Adds_Terms", addsTerms);
+                    cmd.Parameters.AddWithValue("@Percent_Member_Account_Changes", percentChanges);
+                    cmd.Parameters.AddWithValue("@start_date", startDate);
+                    cmd.Parameters.AddWithValue("@end_date", endDate);
+                    cmd.Parameters.AddWithValue("@progids_Included", includedPrograms);
+                    cmd.Parameters.AddWithValue("@progids_Excluded", excludedPrograms);
+                    cmd.Parameters.AddWithValue("@Enrollment_Specialist_Included", includedSpecialists);
+                    cmd.Parameters.AddWithValue("@Enrollment_Specialist_Excluded", excludedSpecialists);
 
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    return true;
+                }
             }
-        }
-
-        internal void SubmitAuditRequest(string selectedValue1, object selectedValue2, string selectedValue3, string selectedValue4, string text1, string text2, DateTime startDate, DateTime endDate, string includedPrograms, string excludedPrograms, string includedSpecialists, string excludedSpecialists)
-        {
-            throw new NotImplementedException();
+            catch (Exception ex)
+            {
+                throw new ApplicationException("An error occurred while submitting the audit request.", ex);
+            }
         }
     }
 }
